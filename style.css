@@ -49,18 +49,12 @@
         width: max-content;
       }
       
-      .brand-mark {
-        align-items: center;
-        background: var(--lime);
-        color: var(--ink);
-        display: flex;
-        font-size: 0.82rem;
-        font-weight: 900;
-        height: 42px;
-        justify-content: center;
-        letter-spacing: -0.06em;
-        transform: skew(-8deg);
-        width: 42px;
+      .brand-logo {
+        display: block;
+        filter: drop-shadow(0 3px 8px rgba(200, 255, 57, 0.18));
+        height: 54px;
+        object-fit: contain;
+        width: 54px;
       }
       
       .brand-name {
