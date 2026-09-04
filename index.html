@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nova United 球队官网">
+  <title>Nova United · 首页</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Nova United 首页"><span class="brand-mark">NU</span><span class="brand-name">NOVA<br>UNITED</span></a>
+    <nav class="main-nav" aria-label="主导航">
+      <a class="active" href="index.html" aria-current="page">首页</a>
+      <a href="players.html">阵容</a>
+      <a href="matches.html">比赛</a>
+      <a href="stats.html">数据榜</a>
+      <a href="admin.html">管理数据</a>
+    </nav>
+    <div class="season-tag">SEASON 2026</div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">NOVA UNITED · TEAM DATABASE</p>
+        <h1>向下一场<br><span>胜利</span>前进</h1>
+        <p class="hero-intro">球队阵容与数据中心。比赛记录加入后，射手榜、助攻榜和出场榜将持续更新。</p>
+        <a class="hero-link" href="stats.html">查看球队数据 <span aria-hidden="true">↘</span></a>
+      </div>
+      <aside class="spotlight" aria-label="焦点球员">
+        <div class="spotlight-label">PLAYER 01</div>
+        <div class="player-number" id="hero-number">—</div>
+        <div class="player-name"><p id="hero-name">等待球员数据</p><span>NOVA UNITED</span></div>
+        <div class="spotlight-stats" id="hero-stats"></div>
+      </aside>
+    </section>
+  </main>
+  <footer><div class="footer-brand">NOVA UNITED</div><p>球队官网 · 数据持续更新</p></footer>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

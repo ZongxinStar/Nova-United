@@ -1,0 +1,24 @@
+Nova United 多页面网站使用说明
+
+1. 请保持以下文件位于同一个文件夹中：
+   index.html、players.html、matches.html、stats.html、admin.html、style.css、app.js、data.js。
+
+2. 页面对应关系：
+   index.html       首页
+   players.html     阵容
+   matches.html     比赛
+   stats.html       数据榜
+   admin.html       管理数据
+
+3. 修改数据：
+   打开 admin.html，添加、编辑或删除球员与比赛。
+   全部修改完成后，点击“下载更新后的 data.js”。
+   将下载得到的新 data.js 替换网站文件夹中的旧 data.js。
+
+4. 更新公开网站：
+   把替换后的整套文件重新上传，或者只覆盖托管平台上的 data.js。
+   其他 HTML、CSS 和 app.js 不需要随每次数据修改而重新生成。
+
+5. 注意：
+   浏览器安全机制不允许网页自动覆盖电脑或服务器中的原 data.js，
+   因此下载后需要手动完成替换。
