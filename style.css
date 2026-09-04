@@ -1270,6 +1270,110 @@
         }
       }
       
+
+      .news-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 520px));
+        margin-top: 2.25rem;
+      }
+
+      .news-card {
+        background:
+          linear-gradient(135deg, rgba(200, 255, 57, 0.08), transparent 55%),
+          var(--ink);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 300px;
+        overflow: hidden;
+        padding: clamp(1.5rem, 3vw, 2.25rem);
+        position: relative;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+
+      .news-card::after {
+        color: rgba(200, 255, 57, 0.08);
+        content: "01";
+        font-size: clamp(8rem, 18vw, 14rem);
+        font-weight: 900;
+        line-height: 0.8;
+        pointer-events: none;
+        position: absolute;
+        right: -0.04em;
+        top: 0.35em;
+      }
+
+      .news-card:hover,
+      .news-card:focus-visible {
+        box-shadow: 12px 12px 0 var(--lime);
+        outline: none;
+        transform: translate(-4px, -4px);
+      }
+
+      .news-card-top,
+      .news-card-body {
+        position: relative;
+        z-index: 1;
+      }
+
+      .news-card-top {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .news-category {
+        color: var(--lime);
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+      }
+
+      .news-external {
+        color: var(--lime);
+        font-size: 1.65rem;
+        line-height: 1;
+      }
+
+      .news-card-body > p {
+        color: var(--mint);
+        font-size: 0.82rem;
+        font-weight: 800;
+        margin: 0 0 0.45rem;
+      }
+
+      .news-card h3 {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        letter-spacing: -0.055em;
+        line-height: 1;
+        margin: 0 0 1.3rem;
+      }
+
+      .news-read-more {
+        border-bottom: 1px solid var(--lime);
+        color: #d9dfdc;
+        display: inline-block;
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding-bottom: 0.3rem;
+      }
+
+      @media (max-width: 600px) {
+        .main-nav {
+          gap: 0.45rem;
+        }
+
+        .main-nav a {
+          font-size: 0.68rem;
+          white-space: nowrap;
+        }
+
+        .news-card {
+          min-height: 260px;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
