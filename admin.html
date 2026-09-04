@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nova United 数据管理">
+  <title>Nova United · 管理数据</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Nova United 首页"><img class="brand-logo" src="logo.png" alt="Nova United 队徽"><span class="brand-name">NOVA<br>UNITED</span></a>
+    <nav class="main-nav" aria-label="主导航">
+      <a href="index.html">首页</a><a href="players.html">阵容</a><a href="matches.html">比赛</a><a href="stats.html">数据榜</a><a class="active" href="admin.html" aria-current="page">管理数据</a>
+    </nav>
+    <div class="season-tag">SEASON 2026</div>
+  </header>
+  <main class="page-main">
+    <section class="section manage-section">
+      <div class="section-heading"><div><p class="eyebrow">DATA MANAGER</p><h2>管理球员数据</h2></div><p class="section-note">修改完成后下载并替换 data.js</p></div>
+      <div class="manager-toolbar">
+        <label class="button button-primary" for="data-file">导入 CSV / JSON / data.js</label>
+        <input id="data-file" class="visually-hidden" type="file" accept=".csv,.json,.js,text/csv,application/json,text/javascript">
+        <button class="button" id="download-template" type="button">下载 CSV 模板</button>
+        <button class="button" id="export-json" type="button">导出 JSON 备份</button>
+        <button class="button button-accent" id="export-data" type="button">下载更新后的 data.js</button>
+      </div>
+      <p class="save-notice">管理页中的修改会立即用于本页预览，但浏览器不能直接覆盖网站文件。全部修改完成后，请下载新的 <b>data.js</b>，并替换网站文件夹中的旧版本。</p>
+      <form class="player-form" id="player-form">
+        <div class="form-field form-name"><label for="player-name">姓名</label><input id="player-name" name="name" required placeholder="例如：张三"></div>
+        <div class="form-field"><label for="player-number">号码</label><input id="player-number" name="number" type="number" min="0" placeholder="可不填"></div>
+        <fieldset class="form-field form-positions">
+          <legend>场上位置（可多选）</legend>
+          <div class="position-options" id="player-positions">
+            <label><input name="positions" type="checkbox" value="门将">门将</label>
+            <label><input name="positions" type="checkbox" value="左后卫">左后卫</label>
+            <label><input name="positions" type="checkbox" value="中后卫">中后卫</label>
+            <label><input name="positions" type="checkbox" value="右后卫">右后卫</label>
+            <label><input name="positions" type="checkbox" value="后腰">后腰</label>
+            <label><input name="positions" type="checkbox" value="中前卫">中前卫</label>
+            <label><input name="positions" type="checkbox" value="左前卫">左前卫</label>
+            <label><input name="positions" type="checkbox" value="右前卫">右前卫</label>
+            <label><input name="positions" type="checkbox" value="前腰">前腰</label>
+            <label><input name="positions" type="checkbox" value="中锋">中锋</label>
+            <label><input name="positions" type="checkbox" value="左边锋">左边锋</label>
+            <label><input name="positions" type="checkbox" value="右边锋">右边锋</label>
+          </div>
+        </fieldset>
+        <div class="form-field form-photo"><label for="player-photo">照片路径（可选）</label><input id="player-photo" name="photo" placeholder="images/players/zhang-san.jpg"></div>
+        <div class="form-field"><label for="player-appearances">历史出场</label><input id="player-appearances" name="appearances" type="number" min="0" value="0" required></div>
+        <div class="form-field"><label for="player-goals">历史进球</label><input id="player-goals" name="goals" type="number" min="0" value="0" required></div>
+        <div class="form-field"><label for="player-assists">历史助攻</label><input id="player-assists" name="assists" type="number" min="0" value="0" required></div>
+        <div class="form-actions form-submit"><button class="button button-primary" id="save-player" type="submit">添加球员</button><button class="button" id="cancel-edit" type="button" hidden>取消编辑</button></div>
+      </form>
+      <div class="table-wrap"><table class="manager-table"><thead><tr><th>姓名</th><th>号码</th><th>位置</th><th>照片</th><th>历史出场</th><th>历史进球</th><th>历史助攻</th><th>操作</th></tr></thead><tbody id="manager-player-list"></tbody></table></div>
+      <p class="manager-status" id="manager-status" role="status" aria-live="polite">数据已从 data.js 载入。</p>
+    </section>
+    <section class="section manage-section match-manager-section">
+      <div class="manager-title-row"><div><p class="eyebrow">MATCH MANAGER</p><h3>添加与编辑比赛</h3></div><p>比赛数据会自动汇总至球员榜单</p></div>
+      <form class="match-form" id="match-form">
+        <div class="match-basic-fields">
+          <div class="form-field"><label for="match-date">比赛日期</label><input id="match-date" name="date" type="date" required></div>
+          <div class="form-field"><label for="match-time">开球时间</label><input id="match-time" name="time" type="time"></div>
+          <div class="form-field"><label for="match-type">比赛类型</label><input id="match-type" name="matchType" placeholder="例如：友谊赛、院赛"></div>
+          <div class="form-field"><label for="match-venue">比赛地点</label><input id="match-venue" name="venue" placeholder="例如：东区操场"></div>
+          <div class="form-field"><label for="match-opponent">对手球队</label><input id="match-opponent" name="opponent" required placeholder="例如：银河 FC"></div>
+          <div class="form-field"><label for="opponent-goals">对手进球</label><input id="opponent-goals" name="opponentGoals" type="number" min="0" value="0" required></div>
+        </div>
+        <div class="lineup-heading"><h4>选择出场球员并记录数据</h4><p>每场最多设置一名队长和一名门将</p></div>
+        <div class="lineup-editor" id="lineup-editor"></div>
+        <div class="match-form-footer"><div class="auto-score">Nova United 本场进球：<strong id="calculated-team-goals">0</strong></div><div><button class="button button-primary" id="save-match" type="submit">添加比赛</button><button class="button" id="cancel-match-edit" type="button" hidden>取消编辑</button></div></div>
+      </form>
+      <div class="table-wrap"><table class="manager-table"><thead><tr><th>日期时间</th><th>比赛类型</th><th>对手</th><th>比分</th><th>地点</th><th>操作</th></tr></thead><tbody id="manager-match-list"></tbody></table></div>
+      <p class="manager-status" id="match-status" role="status" aria-live="polite">可以添加第一场或下一场比赛。</p>
+    </section>
+  </main>
+  <footer><div class="footer-brand">NOVA UNITED</div><p>球队官网 · 数据持续更新</p></footer>
+  <script src="data.js"></script><script src="app.js"></script>
+</body>
+</html>

@@ -25,13 +25,23 @@
     return `${prefix}-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 7)}`;
   }
 
+  function normalizePositions(player) {
+    const source = player.positions ?? player.position ?? player["位置"] ?? "";
+    const values = Array.isArray(source) ? source : String(source).split(/[、,，/|;；]+/);
+    return [...new Set(values.map(value => String(value).trim()).filter(Boolean))];
+  }
+
+  function positionLabel(player) {
+    return Array.isArray(player.positions) ? player.positions.join(" / ") : "";
+  }
+
   function normalizePlayer(player, index) {
     const rawNumber = player.number === "" || player.number == null ? null : Number(player.number);
     const normalized = {
       id: String(player.id || makeId("player", index)),
       name: String(player.name || player["姓名"] || "").trim(),
       number: Number.isFinite(rawNumber) ? Math.max(0, Math.trunc(rawNumber)) : null,
-      position: String(player.position || player["位置"] || "").trim(),
+      positions: normalizePositions(player),
       photo: String(player.photo || player["照片"] || "").trim(),
       appearances: safeInt(player.appearances ?? player["出场"]),
       goals: safeInt(player.goals ?? player["进球"]),
@@ -63,6 +73,7 @@
       id: String(match.id || makeId("match", index)),
       date: String(match.date || ""),
       time: String(match.time || ""),
+      matchType: String(match.matchType || match["比赛类型"] || "").trim(),
       venue: String(match.venue || "").trim(),
       opponent: String(match.opponent || "").trim(),
       opponentGoals: safeInt(match.opponentGoals),
@@ -155,6 +166,16 @@
       : "暂无";
   }
 
+  function compareRankingPlayers(board, a, b) {
+    if (board.field === "goals") {
+      return b.goals - a.goals
+        || a.appearances - b.appearances
+        || b.assists - a.assists
+        || a.name.localeCompare(b.name, "zh-CN");
+    }
+    return b[board.field] - a[board.field] || a.name.localeCompare(b.name, "zh-CN");
+  }
+
   function renderHome() {
     const heroNumber = document.getElementById("hero-number");
     if (!heroNumber) return;
@@ -181,7 +202,8 @@
     const players = playerTotals();
     container.innerHTML = players.length ? players.map((player, index) => {
       const numberLabel = player.number == null ? "号码待定" : `#${player.number}`;
-      const detailLine = `${numberLabel}${player.position ? ` · ${escapeHTML(player.position)}` : ""}`;
+      const positions = positionLabel(player);
+      const detailLine = `${numberLabel}${positions ? ` · ${escapeHTML(positions)}` : ""}`;
       return `<article class="player-card">
         <div class="card-index">${String(index + 1).padStart(2, "0")}</div>
         <div class="card-number">${player.number ?? "—"}</div>
@@ -205,7 +227,7 @@
       const substitutes = match.lineup.filter(item => item.role === "substitute");
       const list = entries => entries.length ? entries.map(item => playerLabel(item, playerMap)).join("、") : "暂无";
       return `<article class="match-card" data-result="${result}">
-        <div class="match-meta"><span>${escapeHTML(formatDate(match.date))}${match.time ? ` · ${escapeHTML(match.time)}` : ""}</span><span class="match-result">${resultLabel}</span></div>
+        <div class="match-meta"><span>${escapeHTML(formatDate(match.date))}${match.time ? ` · ${escapeHTML(match.time)}` : ""}${match.matchType ? ` · ${escapeHTML(match.matchType)}` : ""}</span><span class="match-result">${resultLabel}</span></div>
         <div class="match-scoreline"><h3>Nova United <span>vs</span> ${escapeHTML(match.opponent || "对手待定")}</h3><div class="match-score">${goals} : ${match.opponentGoals}</div></div>
         <div class="match-details">
           <div class="match-detail-row"><b>比赛地点</b><span>${escapeHTML(match.venue || "地点待定")}</span></div>
@@ -228,8 +250,12 @@
       { title: "出场榜", field: "appearances", unit: "场", code: "APPEARANCES" }
     ];
     container.innerHTML = boards.map(board => {
-      const sorted = [...players].sort((a, b) => b[board.field] - a[board.field] || a.name.localeCompare(b.name, "zh-CN"));
-      return `<article class="ranking-card"><div class="ranking-head"><div><span>${board.code}</span><h3>${board.title}</h3></div><span class="ranking-count">${sorted.length}</span></div><ol>${sorted.map((player, index) => `<li><span class="rank">${String(index + 1).padStart(2, "0")}</span><span class="rank-name"><b>${escapeHTML(player.name)}</b><small>${player.number == null ? "号码待定" : `#${player.number}`}</small></span><strong>${player[board.field]}<small>${board.unit}</small></strong></li>`).join("")}</ol></article>`;
+      const sorted = [...players].sort((a, b) => compareRankingPlayers(board, a, b));
+      return `<article class="ranking-card"><div class="ranking-head"><div><span>${board.code}</span><h3>${board.title}</h3></div><span class="ranking-count">${sorted.length}</span></div><ol>${sorted.map((player, index) => {
+        const numberLabel = player.number == null ? "号码待定" : `#${player.number}`;
+        const rankMeta = board.field === "goals" ? `${numberLabel} · ${player.appearances}场 · ${player.assists}助攻` : numberLabel;
+        return `<li><span class="rank">${String(index + 1).padStart(2, "0")}</span><span class="rank-name"><b>${escapeHTML(player.name)}</b><small>${escapeHTML(rankMeta)}</small></span><strong>${player[board.field]}<small>${board.unit}</small></strong></li>`;
+      }).join("")}</ol></article>`;
     }).join("");
   }
 
@@ -239,8 +265,9 @@
     const selected = new Map(selectedLineup.map(item => [item.playerId, item]));
     container.innerHTML = data.players.length ? data.players.map(player => {
       const item = selected.get(player.id) || { role: "none", goals: 0, assists: 0, captain: false, goalkeeper: false };
+      const positions = positionLabel(player);
       return `<div class="lineup-row" data-player-id="${escapeHTML(player.id)}">
-        <div class="lineup-player"><span>${escapeHTML(player.name)}</span><small>${player.number == null ? "号码待定" : `#${player.number}`}${player.position ? ` · ${escapeHTML(player.position)}` : ""}</small></div>
+        <div class="lineup-player"><span>${escapeHTML(player.name)}</span><small>${player.number == null ? "号码待定" : `#${player.number}`}${positions ? ` · ${escapeHTML(positions)}` : ""}</small></div>
         <label>出场身份<select data-field="role"><option value="none"${item.role === "none" ? " selected" : ""}>未出场</option><option value="starter"${item.role === "starter" ? " selected" : ""}>首发</option><option value="substitute"${item.role === "substitute" ? " selected" : ""}>替补</option></select></label>
         <label>进球<input data-field="goals" type="number" min="0" value="${safeInt(item.goals)}"></label>
         <label>助攻<input data-field="assists" type="number" min="0" value="${safeInt(item.assists)}"></label>
@@ -272,9 +299,9 @@
   function renderManager() {
     const playerList = document.getElementById("manager-player-list");
     if (!playerList) return;
-    playerList.innerHTML = data.players.length ? data.players.map((player, index) => `<tr><td>${escapeHTML(player.name)}</td><td>${player.number ?? "—"}</td><td>${escapeHTML(player.position || "—")}</td><td>${player.photo ? "已设置" : "—"}</td><td>${player.appearances}</td><td>${player.goals}</td><td>${player.assists}</td><td><div class="row-actions"><button type="button" data-player-edit="${index}">编辑</button><button type="button" data-player-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="8">暂无球员</td></tr>';
+    playerList.innerHTML = data.players.length ? data.players.map((player, index) => `<tr><td>${escapeHTML(player.name)}</td><td>${player.number ?? "—"}</td><td>${escapeHTML(positionLabel(player) || "—")}</td><td>${player.photo ? "已设置" : "—"}</td><td>${player.appearances}</td><td>${player.goals}</td><td>${player.assists}</td><td><div class="row-actions"><button type="button" data-player-edit="${index}">编辑</button><button type="button" data-player-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="8">暂无球员</td></tr>';
     const matchList = document.getElementById("manager-match-list");
-    matchList.innerHTML = data.matches.length ? data.matches.map((match, index) => `<tr><td>${escapeHTML(match.date || "—")} ${escapeHTML(match.time || "")}</td><td>${escapeHTML(match.opponent || "—")}</td><td>${teamGoals(match)} : ${match.opponentGoals}</td><td>${escapeHTML(match.venue || "—")}</td><td><div class="row-actions"><button type="button" data-match-edit="${index}">编辑</button><button type="button" data-match-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="5">暂无比赛记录</td></tr>';
+    matchList.innerHTML = data.matches.length ? data.matches.map((match, index) => `<tr><td>${escapeHTML(match.date || "—")} ${escapeHTML(match.time || "")}</td><td>${escapeHTML(match.matchType || "—")}</td><td>${escapeHTML(match.opponent || "—")}</td><td>${teamGoals(match)} : ${match.opponentGoals}</td><td>${escapeHTML(match.venue || "—")}</td><td><div class="row-actions"><button type="button" data-match-edit="${index}">编辑</button><button type="button" data-match-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="6">暂无比赛记录</td></tr>';
     if (editingMatchIndex < 0) renderLineupEditor();
   }
 
@@ -292,7 +319,7 @@
   function resetPlayerForm() {
     if (!playerForm) return;
     playerForm.reset();
-    playerForm.elements.position.value = "";
+    playerForm.querySelectorAll('input[name="positions"]').forEach(input => { input.checked = false; });
     playerForm.elements.photo.value = "";
     playerForm.elements.appearances.value = 0;
     playerForm.elements.goals.value = 0;
@@ -310,6 +337,18 @@
     document.getElementById("save-match").textContent = "添加比赛";
     document.getElementById("cancel-match-edit").hidden = true;
     renderLineupEditor();
+  }
+
+  function selectedPlayerPositions() {
+    if (!playerForm) return [];
+    return [...playerForm.querySelectorAll('input[name="positions"]:checked')].map(input => input.value);
+  }
+
+  function setPlayerPositions(positions) {
+    const selected = new Set(Array.isArray(positions) ? positions : []);
+    playerForm.querySelectorAll('input[name="positions"]').forEach(input => {
+      input.checked = selected.has(input.value);
+    });
   }
 
   function parseCSV(text) {
@@ -334,7 +373,7 @@
     row.push(field.trim());
     if (row.some(cell => cell !== "")) rows.push(row);
     if (rows.length < 2) throw new Error("CSV 中没有可导入的球员数据");
-    const aliases = { "姓名": "name", "name": "name", "号码": "number", "number": "number", "位置": "position", "position": "position", "照片": "photo", "photo": "photo", "出场": "appearances", "appearances": "appearances", "进球": "goals", "goals": "goals", "助攻": "assists", "assists": "assists" };
+    const aliases = { "姓名": "name", "name": "name", "号码": "number", "number": "number", "位置": "positions", "position": "positions", "positions": "positions", "照片": "photo", "photo": "photo", "出场": "appearances", "appearances": "appearances", "进球": "goals", "goals": "goals", "助攻": "assists", "assists": "assists" };
     const headers = rows[0].map(item => aliases[item.trim().toLowerCase()] || aliases[item.trim()]);
     if (!headers.includes("name")) throw new Error("CSV 必须包含“姓名”或 name 列");
     return rows.slice(1).map((cells, index) => {
@@ -383,7 +422,7 @@
           id: editingPlayerIndex >= 0 ? data.players[editingPlayerIndex].id : undefined,
           name: playerForm.elements.name.value,
           number: playerForm.elements.number.value,
-          position: playerForm.elements.position.value,
+          positions: selectedPlayerPositions(),
           photo: playerForm.elements.photo.value,
           appearances: playerForm.elements.appearances.value,
           goals: playerForm.elements.goals.value,
@@ -404,7 +443,7 @@
         const player = data.players[editingPlayerIndex];
         playerForm.elements.name.value = player.name;
         playerForm.elements.number.value = player.number ?? "";
-        playerForm.elements.position.value = player.position || "";
+        setPlayerPositions(player.positions);
         playerForm.elements.photo.value = player.photo || "";
         playerForm.elements.appearances.value = player.appearances;
         playerForm.elements.goals.value = player.goals;
@@ -452,6 +491,7 @@
           id: editingMatchIndex >= 0 ? data.matches[editingMatchIndex].id : undefined,
           date: matchForm.elements.date.value,
           time: matchForm.elements.time.value,
+          matchType: matchForm.elements.matchType.value,
           venue: matchForm.elements.venue.value,
           opponent: matchForm.elements.opponent.value,
           opponentGoals: matchForm.elements.opponentGoals.value,
@@ -474,6 +514,7 @@
         const match = data.matches[editingMatchIndex];
         matchForm.elements.date.value = match.date;
         matchForm.elements.time.value = match.time;
+        matchForm.elements.matchType.value = match.matchType;
         matchForm.elements.venue.value = match.venue;
         matchForm.elements.opponent.value = match.opponent;
         matchForm.elements.opponentGoals.value = match.opponentGoals;
@@ -510,7 +551,7 @@
     });
 
     document.getElementById("download-template").addEventListener("click", () => {
-      const rows = [["姓名", "号码", "位置", "照片", "出场", "进球", "助攻"], ...data.players.map(player => [player.name, player.number ?? "", player.position, player.photo, player.appearances, player.goals, player.assists])];
+      const rows = [["姓名", "号码", "位置", "照片", "出场", "进球", "助攻"], ...data.players.map(player => [player.name, player.number ?? "", player.positions.join("、"), player.photo, player.appearances, player.goals, player.assists])];
       downloadFile("nova-united-player-template.csv", "\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\r\n"), "text/csv;charset=utf-8");
       playerStatus.textContent = "CSV 模板已下载，可以用 Excel 打开并填写历史基础数据。";
     });
