@@ -28,14 +28,16 @@
       </div>
       <p class="save-notice">管理页中的修改会立即用于本页预览，但浏览器不能直接覆盖网站文件。全部修改完成后，请下载新的 <b>data.js</b>，并替换网站文件夹中的旧版本。</p>
       <form class="player-form" id="player-form">
-        <div class="form-field"><label for="player-name">姓名</label><input id="player-name" name="name" required placeholder="例如：张三"></div>
+        <div class="form-field form-name"><label for="player-name">姓名</label><input id="player-name" name="name" required placeholder="例如：张三"></div>
         <div class="form-field"><label for="player-number">号码</label><input id="player-number" name="number" type="number" min="0" placeholder="可不填"></div>
+        <div class="form-field"><label for="player-position">场上位置（可选）</label><select id="player-position" name="position"><option value="">未指定</option><option value="门将">门将</option><option value="后卫">后卫</option><option value="中场">中场</option><option value="前锋">前锋</option><option value="其他">其他</option></select></div>
+        <div class="form-field form-photo"><label for="player-photo">照片路径（可选）</label><input id="player-photo" name="photo" placeholder="images/players/zhang-san.jpg"></div>
         <div class="form-field"><label for="player-appearances">历史出场</label><input id="player-appearances" name="appearances" type="number" min="0" value="0" required></div>
         <div class="form-field"><label for="player-goals">历史进球</label><input id="player-goals" name="goals" type="number" min="0" value="0" required></div>
         <div class="form-field"><label for="player-assists">历史助攻</label><input id="player-assists" name="assists" type="number" min="0" value="0" required></div>
-        <div class="form-actions"><button class="button button-primary" id="save-player" type="submit">添加球员</button><button class="button" id="cancel-edit" type="button" hidden>取消编辑</button></div>
+        <div class="form-actions form-submit"><button class="button button-primary" id="save-player" type="submit">添加球员</button><button class="button" id="cancel-edit" type="button" hidden>取消编辑</button></div>
       </form>
-      <div class="table-wrap"><table class="manager-table"><thead><tr><th>姓名</th><th>号码</th><th>历史出场</th><th>历史进球</th><th>历史助攻</th><th>操作</th></tr></thead><tbody id="manager-player-list"></tbody></table></div>
+      <div class="table-wrap"><table class="manager-table"><thead><tr><th>姓名</th><th>号码</th><th>位置</th><th>照片</th><th>历史出场</th><th>历史进球</th><th>历史助攻</th><th>操作</th></tr></thead><tbody id="manager-player-list"></tbody></table></div>
       <p class="manager-status" id="manager-status" role="status" aria-live="polite">数据已从 data.js 载入。</p>
     </section>
     <section class="section manage-section match-manager-section">
@@ -48,7 +50,7 @@
           <div class="form-field"><label for="match-opponent">对手球队</label><input id="match-opponent" name="opponent" required placeholder="例如：银河 FC"></div>
           <div class="form-field"><label for="opponent-goals">对手进球</label><input id="opponent-goals" name="opponentGoals" type="number" min="0" value="0" required></div>
         </div>
-        <div class="lineup-heading"><h4>选择出场球员并记录数据</h4><p>填写进球或助攻时，未出场球员会自动设为替补</p></div>
+        <div class="lineup-heading"><h4>选择出场球员并记录数据</h4><p>每场最多设置一名队长和一名门将</p></div>
         <div class="lineup-editor" id="lineup-editor"></div>
         <div class="match-form-footer"><div class="auto-score">Nova United 本场进球：<strong id="calculated-team-goals">0</strong></div><div><button class="button button-primary" id="save-match" type="submit">添加比赛</button><button class="button" id="cancel-match-edit" type="button" hidden>取消编辑</button></div></div>
       </form>

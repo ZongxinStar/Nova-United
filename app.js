@@ -31,6 +31,8 @@
       id: String(player.id || makeId("player", index)),
       name: String(player.name || player["姓名"] || "").trim(),
       number: Number.isFinite(rawNumber) ? Math.max(0, Math.trunc(rawNumber)) : null,
+      position: String(player.position || player["位置"] || "").trim(),
+      photo: String(player.photo || player["照片"] || "").trim(),
       appearances: safeInt(player.appearances ?? player["出场"]),
       goals: safeInt(player.goals ?? player["进球"]),
       assists: safeInt(player.assists ?? player["助攻"])
@@ -41,6 +43,22 @@
 
   function normalizeMatch(match, index, playerIds) {
     const lineup = Array.isArray(match.lineup) ? match.lineup : [];
+    const normalizedLineup = lineup.map(item => ({
+      playerId: String(item.playerId || ""),
+      role: item.role === "starter" ? "starter" : "substitute",
+      goals: safeInt(item.goals),
+      assists: safeInt(item.assists),
+      captain: Boolean(item.captain),
+      goalkeeper: Boolean(item.goalkeeper)
+    })).filter(item => playerIds.has(item.playerId));
+    let captainAssigned = false;
+    let goalkeeperAssigned = false;
+    normalizedLineup.forEach(item => {
+      if (item.captain && captainAssigned) item.captain = false;
+      if (item.goalkeeper && goalkeeperAssigned) item.goalkeeper = false;
+      if (item.captain) captainAssigned = true;
+      if (item.goalkeeper) goalkeeperAssigned = true;
+    });
     return {
       id: String(match.id || makeId("match", index)),
       date: String(match.date || ""),
@@ -48,12 +66,7 @@
       venue: String(match.venue || "").trim(),
       opponent: String(match.opponent || "").trim(),
       opponentGoals: safeInt(match.opponentGoals),
-      lineup: lineup.map(item => ({
-        playerId: String(item.playerId || ""),
-        role: item.role === "starter" ? "starter" : "substitute",
-        goals: safeInt(item.goals),
-        assists: safeInt(item.assists)
-      })).filter(item => playerIds.has(item.playerId))
+      lineup: normalizedLineup
     };
   }
 
@@ -87,6 +100,20 @@
     return data.players.map(player => totals.get(player.id));
   }
 
+  function seasonRecord() {
+    const record = { played: data.matches.length, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0 };
+    data.matches.forEach(match => {
+      const goals = teamGoals(match);
+      record.goalsFor += goals;
+      record.goalsAgainst += match.opponentGoals;
+      if (goals > match.opponentGoals) record.wins += 1;
+      else if (goals < match.opponentGoals) record.losses += 1;
+      else record.draws += 1;
+    });
+    record.goalDifference = record.goalsFor - record.goalsAgainst;
+    return record;
+  }
+
   function formatDate(date) {
     if (!date) return "日期待定";
     const parsed = new Date(`${date}T00:00:00`);
@@ -98,7 +125,27 @@
   function playerLabel(item, playerMap) {
     const player = playerMap.get(item.playerId);
     if (!player) return "未知球员";
-    return `${escapeHTML(player.name)}${player.number == null ? "" : ` #${player.number}`}`;
+    const badges = [
+      item.captain ? '<span class="lineup-badge" title="队长">队长</span>' : "",
+      item.goalkeeper ? '<span class="lineup-badge goalkeeper" title="门将">门将</span>' : ""
+    ].join("");
+    return `${escapeHTML(player.name)}${player.number == null ? "" : ` #${player.number}`}${badges}`;
+  }
+
+  function playerAvatar(player) {
+    const initial = escapeHTML(player.name.slice(0, 1));
+    if (!player.photo) return `<div class="player-avatar" aria-hidden="true">${initial}</div>`;
+    return `<div class="player-avatar has-photo"><img src="${escapeHTML(player.photo)}" alt="${escapeHTML(player.name)}的照片" data-photo-fallback="${initial}"></div>`;
+  }
+
+  function attachPhotoFallbacks(container) {
+    container.querySelectorAll("[data-photo-fallback]").forEach(image => {
+      image.addEventListener("error", () => {
+        const holder = image.parentElement;
+        holder.classList.remove("has-photo");
+        holder.textContent = image.dataset.photoFallback;
+      }, { once: true });
+    });
   }
 
   function eventList(match, field, unit, playerMap) {
@@ -117,6 +164,15 @@
     document.getElementById("hero-stats").innerHTML = firstPlayer
       ? stat("出场", firstPlayer.appearances) + stat("进球", firstPlayer.goals) + stat("助攻", firstPlayer.assists)
       : "";
+    const seasonGrid = document.getElementById("season-record-grid");
+    if (seasonGrid) {
+      const record = seasonRecord();
+      const items = [
+        ["比赛", record.played], ["胜", record.wins], ["平", record.draws], ["负", record.losses],
+        ["进球", record.goalsFor], ["失球", record.goalsAgainst], ["净胜球", record.goalDifference > 0 ? `+${record.goalDifference}` : record.goalDifference]
+      ];
+      seasonGrid.innerHTML = items.map(([label, value]) => `<div class="season-record-item"><strong>${value}</strong><span>${label}</span></div>`).join("");
+    }
   }
 
   function renderPlayers() {
@@ -125,13 +181,15 @@
     const players = playerTotals();
     container.innerHTML = players.length ? players.map((player, index) => {
       const numberLabel = player.number == null ? "号码待定" : `#${player.number}`;
+      const detailLine = `${numberLabel}${player.position ? ` · ${escapeHTML(player.position)}` : ""}`;
       return `<article class="player-card">
         <div class="card-index">${String(index + 1).padStart(2, "0")}</div>
         <div class="card-number">${player.number ?? "—"}</div>
-        <div class="card-identity"><div class="player-avatar" aria-hidden="true">${escapeHTML(player.name.slice(0, 1))}</div><div><h3>${escapeHTML(player.name)}</h3><p>NOVA UNITED · ${numberLabel}</p></div></div>
+        <div class="card-identity">${playerAvatar(player)}<div><h3>${escapeHTML(player.name)}</h3><p>NOVA UNITED · ${detailLine}</p></div></div>
         <div class="card-stats">${stat("出场", player.appearances)}${stat("进球", player.goals)}${stat("助攻", player.assists)}</div>
       </article>`;
     }).join("") : '<p class="empty-message">暂时没有球员，请在管理数据页面添加球员。</p>';
+    attachPhotoFallbacks(container);
   }
 
   function renderMatches() {
@@ -180,12 +238,14 @@
     if (!container) return;
     const selected = new Map(selectedLineup.map(item => [item.playerId, item]));
     container.innerHTML = data.players.length ? data.players.map(player => {
-      const item = selected.get(player.id) || { role: "none", goals: 0, assists: 0 };
+      const item = selected.get(player.id) || { role: "none", goals: 0, assists: 0, captain: false, goalkeeper: false };
       return `<div class="lineup-row" data-player-id="${escapeHTML(player.id)}">
-        <div class="lineup-player"><span>${escapeHTML(player.name)}</span><small>${player.number == null ? "号码待定" : `#${player.number}`}</small></div>
+        <div class="lineup-player"><span>${escapeHTML(player.name)}</span><small>${player.number == null ? "号码待定" : `#${player.number}`}${player.position ? ` · ${escapeHTML(player.position)}` : ""}</small></div>
         <label>出场身份<select data-field="role"><option value="none"${item.role === "none" ? " selected" : ""}>未出场</option><option value="starter"${item.role === "starter" ? " selected" : ""}>首发</option><option value="substitute"${item.role === "substitute" ? " selected" : ""}>替补</option></select></label>
         <label>进球<input data-field="goals" type="number" min="0" value="${safeInt(item.goals)}"></label>
         <label>助攻<input data-field="assists" type="number" min="0" value="${safeInt(item.assists)}"></label>
+        <label class="lineup-flag"><input data-field="captain" type="checkbox"${item.captain ? " checked" : ""}>队长</label>
+        <label class="lineup-flag"><input data-field="goalkeeper" type="checkbox"${item.goalkeeper ? " checked" : ""}>门将</label>
       </div>`;
     }).join("") : '<p class="empty-message">请先添加球员，再录入比赛。</p>';
     updateCalculatedGoals();
@@ -196,7 +256,9 @@
       playerId: row.dataset.playerId,
       role: row.querySelector('[data-field="role"]').value,
       goals: safeInt(row.querySelector('[data-field="goals"]').value),
-      assists: safeInt(row.querySelector('[data-field="assists"]').value)
+      assists: safeInt(row.querySelector('[data-field="assists"]').value),
+      captain: row.querySelector('[data-field="captain"]').checked,
+      goalkeeper: row.querySelector('[data-field="goalkeeper"]').checked
     })).filter(item => item.role !== "none");
   }
 
@@ -210,7 +272,7 @@
   function renderManager() {
     const playerList = document.getElementById("manager-player-list");
     if (!playerList) return;
-    playerList.innerHTML = data.players.length ? data.players.map((player, index) => `<tr><td>${escapeHTML(player.name)}</td><td>${player.number ?? "—"}</td><td>${player.appearances}</td><td>${player.goals}</td><td>${player.assists}</td><td><div class="row-actions"><button type="button" data-player-edit="${index}">编辑</button><button type="button" data-player-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="6">暂无球员</td></tr>';
+    playerList.innerHTML = data.players.length ? data.players.map((player, index) => `<tr><td>${escapeHTML(player.name)}</td><td>${player.number ?? "—"}</td><td>${escapeHTML(player.position || "—")}</td><td>${player.photo ? "已设置" : "—"}</td><td>${player.appearances}</td><td>${player.goals}</td><td>${player.assists}</td><td><div class="row-actions"><button type="button" data-player-edit="${index}">编辑</button><button type="button" data-player-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="8">暂无球员</td></tr>';
     const matchList = document.getElementById("manager-match-list");
     matchList.innerHTML = data.matches.length ? data.matches.map((match, index) => `<tr><td>${escapeHTML(match.date || "—")} ${escapeHTML(match.time || "")}</td><td>${escapeHTML(match.opponent || "—")}</td><td>${teamGoals(match)} : ${match.opponentGoals}</td><td>${escapeHTML(match.venue || "—")}</td><td><div class="row-actions"><button type="button" data-match-edit="${index}">编辑</button><button type="button" data-match-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="5">暂无比赛记录</td></tr>';
     if (editingMatchIndex < 0) renderLineupEditor();
@@ -230,6 +292,8 @@
   function resetPlayerForm() {
     if (!playerForm) return;
     playerForm.reset();
+    playerForm.elements.position.value = "";
+    playerForm.elements.photo.value = "";
     playerForm.elements.appearances.value = 0;
     playerForm.elements.goals.value = 0;
     playerForm.elements.assists.value = 0;
@@ -270,7 +334,7 @@
     row.push(field.trim());
     if (row.some(cell => cell !== "")) rows.push(row);
     if (rows.length < 2) throw new Error("CSV 中没有可导入的球员数据");
-    const aliases = { "姓名": "name", "name": "name", "号码": "number", "number": "number", "出场": "appearances", "appearances": "appearances", "进球": "goals", "goals": "goals", "助攻": "assists", "assists": "assists" };
+    const aliases = { "姓名": "name", "name": "name", "号码": "number", "number": "number", "位置": "position", "position": "position", "照片": "photo", "photo": "photo", "出场": "appearances", "appearances": "appearances", "进球": "goals", "goals": "goals", "助攻": "assists", "assists": "assists" };
     const headers = rows[0].map(item => aliases[item.trim().toLowerCase()] || aliases[item.trim()]);
     if (!headers.includes("name")) throw new Error("CSV 必须包含“姓名”或 name 列");
     return rows.slice(1).map((cells, index) => {
@@ -319,6 +383,8 @@
           id: editingPlayerIndex >= 0 ? data.players[editingPlayerIndex].id : undefined,
           name: playerForm.elements.name.value,
           number: playerForm.elements.number.value,
+          position: playerForm.elements.position.value,
+          photo: playerForm.elements.photo.value,
           appearances: playerForm.elements.appearances.value,
           goals: playerForm.elements.goals.value,
           assists: playerForm.elements.assists.value
@@ -338,6 +404,8 @@
         const player = data.players[editingPlayerIndex];
         playerForm.elements.name.value = player.name;
         playerForm.elements.number.value = player.number ?? "";
+        playerForm.elements.position.value = player.position || "";
+        playerForm.elements.photo.value = player.photo || "";
         playerForm.elements.appearances.value = player.appearances;
         playerForm.elements.goals.value = player.goals;
         playerForm.elements.assists.value = player.assists;
@@ -360,6 +428,13 @@
     document.getElementById("cancel-edit").addEventListener("click", resetPlayerForm);
     document.getElementById("lineup-editor").addEventListener("input", event => {
       const field = event.target.dataset.field;
+      if ((field === "captain" || field === "goalkeeper") && event.target.checked) {
+        document.querySelectorAll(`[data-field="${field}"]`).forEach(input => {
+          if (input !== event.target) input.checked = false;
+        });
+        const role = event.target.closest(".lineup-row").querySelector('[data-field="role"]');
+        if (role.value === "none") role.value = "starter";
+      }
       if ((field === "goals" || field === "assists") && safeInt(event.target.value) > 0) {
         const role = event.target.closest(".lineup-row").querySelector('[data-field="role"]');
         if (role.value === "none") role.value = "substitute";
@@ -435,7 +510,7 @@
     });
 
     document.getElementById("download-template").addEventListener("click", () => {
-      const rows = [["姓名", "号码", "出场", "进球", "助攻"], ...data.players.map(player => [player.name, player.number ?? "", player.appearances, player.goals, player.assists])];
+      const rows = [["姓名", "号码", "位置", "照片", "出场", "进球", "助攻"], ...data.players.map(player => [player.name, player.number ?? "", player.position, player.photo, player.appearances, player.goals, player.assists])];
       downloadFile("nova-united-player-template.csv", "\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\r\n"), "text/csv;charset=utf-8");
       playerStatus.textContent = "CSV 模板已下载，可以用 Excel 打开并填写历史基础数据。";
     });
