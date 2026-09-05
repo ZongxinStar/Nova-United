@@ -203,7 +203,7 @@ window.NOVA_DATA = {
     {
       "id": "player-1788503151602-14-1bu7m",
       "name": "程淦",
-      "number": null,
+      "number": 13,
       "positions": [
         "中后卫"
       ],
@@ -215,7 +215,7 @@ window.NOVA_DATA = {
     {
       "id": "player-1788503168680-15-3tnjl",
       "name": "晏阳",
-      "number": null,
+      "number": 78,
       "positions": [
         "中后卫"
       ],
@@ -666,6 +666,105 @@ window.NOVA_DATA = {
         {
           "playerId": "player-1788503168680-15-3tnjl",
           "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
+    },
+    {
+      "id": "match-20260425-warriors",
+      "date": "2026-04-25",
+      "time": "12:00",
+      "matchType": "2026年八人制",
+      "venue": "东区操场",
+      "opponent": "Warriors",
+      "opponentGoals": 15,
+      "lineup": [
+        {
+          "playerId": "player-1788449659701-2",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "player-1788503151602-14-1bu7m",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480148443-8-zjvyc",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480075275-4-4nenu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503168680-15-3tnjl",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480314719-11-th2iv",
+          "role": "starter",
+          "goals": 2,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480304489-10-pofqu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "wu-qianhe",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": true,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480660786-13-t3uvj",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480089268-5-txjpc",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "yin-zongxin",
+          "role": "substitute",
           "goals": 0,
           "assists": 0,
           "captain": false,
