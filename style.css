@@ -1348,7 +1348,8 @@
 
       .news-list {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 520px));
+        gap: 1.4rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         margin-top: 2.25rem;
       }
 
@@ -1369,7 +1370,7 @@
 
       .news-card::after {
         color: rgba(200, 255, 57, 0.08);
-        content: "01";
+        content: attr(data-number);
         font-size: clamp(8rem, 18vw, 14rem);
         font-weight: 900;
         line-height: 0.8;
@@ -1419,7 +1420,7 @@
       }
 
       .news-card h3 {
-        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-size: clamp(1.7rem, 3vw, 3rem);
         letter-spacing: -0.055em;
         line-height: 1;
         margin: 0 0 1.3rem;
