@@ -894,6 +894,97 @@ window.NOVA_DATA = {
           "goalkeeper": false
         }
       ]
+    },
+    {
+      "id": "match-20260411-laomushuode",
+      "date": "2026-04-11",
+      "time": "12:00",
+      "matchType": "友谊赛",
+      "venue": "东区操场",
+      "opponent": "牢穆说的队",
+      "opponentGoals": 1,
+      "lineup": [
+        {
+          "playerId": "wu-qianhe",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": true,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449659701-2",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "player-1788449743936-3",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503151602-14-1bu7m",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "yin-zongxin",
+          "role": "starter",
+          "goals": 1,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480314719-11-th2iv",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480089268-5-txjpc",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480304489-10-pofqu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503168680-15-3tnjl",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503188675-16-l1clp",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
     }
   ]
 };
