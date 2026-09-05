@@ -364,7 +364,7 @@ window.NOVA_DATA = {
       "id": "match-1788502813285-1-wmxyh",
       "date": "2026-06-04",
       "time": "12:20",
-      "matchType": "友谊赛",
+      "matchType": "2026四小天鹅杯",
       "venue": "西区操场",
       "opponent": "Oldream",
       "opponentGoals": 1,
@@ -980,6 +980,97 @@ window.NOVA_DATA = {
           "playerId": "player-1788503188675-16-l1clp",
           "role": "substitute",
           "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
+    },
+    {
+      "id": "match-20260604-oldream-friendly",
+      "date": "2026-06-04",
+      "time": "12:00",
+      "matchType": "友谊赛",
+      "venue": "西区操场",
+      "opponent": "Oldream",
+      "opponentGoals": 4,
+      "lineup": [
+        {
+          "playerId": "wu-qianhe",
+          "role": "starter",
+          "goals": 1,
+          "assists": 1,
+          "captain": true,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "yin-zongxin",
+          "role": "starter",
+          "goals": 2,
+          "assists": 1,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449659701-2",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "player-1788480304489-10-pofqu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480089268-5-txjpc",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480122966-7-ek8iy",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480314719-11-th2iv",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480075275-4-4nenu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503209270-17-da5b0",
+          "role": "substitute",
+          "goals": 1,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449743936-3",
+          "role": "substitute",
+          "goals": 1,
           "assists": 0,
           "captain": false,
           "goalkeeper": false
