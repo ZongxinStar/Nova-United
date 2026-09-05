@@ -1192,7 +1192,23 @@ window.NOVA_DATA = {
       "time": "",
       "matchType": "",
       "venue": "西区操场",
-      "opponent": "Oldream"
+      "opponent": "Oldream",
+      "prediction": {
+        "outcome": "Nova United 获胜",
+        "teamGoals": 3,
+        "opponentGoals": 2,
+        "scorers": [
+          {
+            "name": "尹宗鑫",
+            "goals": 2
+          },
+          {
+            "name": "李嘉创",
+            "goals": 1
+          }
+        ],
+        "basis": "参考对阵 Oldream 的1胜1平及当前射手数据"
+      }
     }
   ]
 };
