@@ -82,13 +82,27 @@
   }
 
   function normalizeUpcomingMatch(match, index) {
+    const rawPrediction = match?.prediction;
+    const prediction = rawPrediction && typeof rawPrediction === "object" ? {
+      outcome: String(rawPrediction.outcome || "").trim(),
+      teamGoals: safeInt(rawPrediction.teamGoals),
+      opponentGoals: safeInt(rawPrediction.opponentGoals),
+      scorers: Array.isArray(rawPrediction.scorers)
+        ? rawPrediction.scorers.map(item => ({
+          name: String(item?.name || "").trim(),
+          goals: Math.max(1, safeInt(item?.goals))
+        })).filter(item => item.name)
+        : [],
+      basis: String(rawPrediction.basis || "").trim()
+    } : null;
     return {
       id: String(match.id || makeId("upcoming-match", index)),
       date: String(match.date || ""),
       time: String(match.time || ""),
       matchType: String(match.matchType || match["比赛类型"] || "").trim(),
       venue: String(match.venue || "").trim(),
-      opponent: String(match.opponent || "").trim()
+      opponent: String(match.opponent || "").trim(),
+      prediction
     };
   }
 
@@ -260,14 +274,27 @@
     if (!container) return;
     const matchSortKey = match => `${match.date || "9999-12-31"}T${match.time || "23:59"}`;
     const matches = [...data.futureMatches].sort((a, b) => matchSortKey(a).localeCompare(matchSortKey(b)));
-    container.innerHTML = matches.length ? matches.map(match => `<article class="match-card upcoming-match-card" data-result="upcoming">
-      <div class="match-meta"><span>${escapeHTML(formatDate(match.date))}${match.matchType ? ` · ${escapeHTML(match.matchType)}` : ""}</span><span class="match-result upcoming-status">待开赛</span></div>
-      <div class="match-scoreline"><h3>Nova United <span>vs</span> ${escapeHTML(match.opponent || "对手待定")}</h3><div class="upcoming-kickoff">${escapeHTML(match.time || "时间待定")}</div></div>
-      <div class="match-details">
-        <div class="match-detail-row"><b>比赛地点</b><span>${escapeHTML(match.venue || "地点待定")}</span></div>
-        <div class="match-detail-row"><b>开球时间</b><span>${escapeHTML(match.time || "待定")}</span></div>
-      </div>
-    </article>`).join("") : '<p class="empty-message">暂时没有未来比赛安排。</p>';
+    container.innerHTML = matches.length ? matches.map(match => {
+      const prediction = match.prediction;
+      const predictedScorers = prediction?.scorers.length
+        ? prediction.scorers.map(item => `${escapeHTML(item.name)} × ${item.goals}球`).join("、")
+        : "暂未预测";
+      const predictionPanel = prediction ? `<aside class="ai-prediction" aria-label="AI赛果预测">
+        <div class="ai-prediction-head"><span>AI 预测</span><strong>${escapeHTML(prediction.outcome || "赛果待定")}</strong></div>
+        <div class="ai-prediction-score"><span>预测比分</span><b>Nova United ${prediction.teamGoals} : ${prediction.opponentGoals} ${escapeHTML(match.opponent || "对手")}</b></div>
+        <div class="ai-prediction-scorers"><span>预计进球</span><b>${predictedScorers}</b></div>
+        <p>${escapeHTML(prediction.basis || "根据现有比赛数据生成")} · 仅供娱乐</p>
+      </aside>` : "";
+      return `<article class="match-card upcoming-match-card" data-result="upcoming">
+        <div class="match-meta"><span>${escapeHTML(formatDate(match.date))}${match.matchType ? ` · ${escapeHTML(match.matchType)}` : ""}</span><span class="match-result upcoming-status">待开赛</span></div>
+        <div class="match-scoreline"><h3>Nova United <span>vs</span> ${escapeHTML(match.opponent || "对手待定")}</h3><div class="upcoming-kickoff">${escapeHTML(match.time || "时间待定")}</div></div>
+        <div class="match-details">
+          <div class="match-detail-row"><b>比赛地点</b><span>${escapeHTML(match.venue || "地点待定")}</span></div>
+          <div class="match-detail-row"><b>开球时间</b><span>${escapeHTML(match.time || "待定")}</span></div>
+        </div>
+        ${predictionPanel}
+      </article>`;
+    }).join("") : '<p class="empty-message">暂时没有未来比赛安排。</p>';
   }
 
   function renderMatches() {
