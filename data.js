@@ -419,7 +419,7 @@ window.NOVA_DATA = {
         },
         {
           "playerId": "player-1788480106645-6-lmggw",
-          "role": "starter",
+          "role": "substitute",
           "goals": 0,
           "assists": 0,
           "captain": false,
@@ -446,6 +446,14 @@ window.NOVA_DATA = {
           "role": "starter",
           "goals": 0,
           "assists": 1,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503209270-17-da5b0",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
           "captain": false,
           "goalkeeper": false
         }
