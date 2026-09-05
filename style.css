@@ -453,6 +453,30 @@
         background: var(--paper-dark);
       }
 
+      .match-group + .match-group {
+        border-top: 1px solid var(--line);
+        margin-top: clamp(3rem, 6vw, 5rem);
+        padding-top: clamp(2.5rem, 5vw, 4rem);
+      }
+
+      .match-group-heading {
+        align-items: end;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.4rem;
+      }
+
+      .match-group-heading h3 {
+        font-size: clamp(1.55rem, 3vw, 2.35rem);
+        margin: 0.2rem 0 0;
+      }
+
+      .match-group-heading > p {
+        color: #66716d;
+        font-size: 0.82rem;
+        margin: 0;
+      }
+
       .match-grid {
         display: grid;
         gap: 1.2rem;
@@ -464,6 +488,29 @@
         border: 1px solid var(--line);
         border-top: 5px solid var(--ink);
         padding: 1.5rem;
+      }
+
+      .upcoming-match-card {
+        background: linear-gradient(135deg, rgba(200, 255, 57, 0.18), rgba(255, 255, 255, 0) 55%), white;
+      }
+
+      .match-card[data-result="upcoming"] {
+        border-top-color: var(--lime);
+      }
+
+      .upcoming-status {
+        background: var(--lime);
+        color: var(--ink);
+        padding: 0.2rem 0.5rem;
+      }
+
+      .upcoming-kickoff {
+        background: var(--ink);
+        color: var(--lime);
+        flex: 0 0 auto;
+        font-size: 1rem;
+        font-weight: 900;
+        padding: 0.65rem 0.8rem;
       }
 
       .match-card[data-result="win"] { border-top-color: #68a600; }
@@ -1146,6 +1193,12 @@
 
         .match-grid {
           grid-template-columns: 1fr;
+        }
+
+        .match-group-heading {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 0.55rem;
         }
 
         .season-record-grid {
