@@ -513,6 +513,67 @@
         padding: 0.65rem 0.8rem;
       }
 
+      .ai-prediction {
+        background: var(--ink);
+        color: white;
+        margin-top: 1.3rem;
+        padding: 1rem;
+      }
+
+      .ai-prediction-head,
+      .ai-prediction-score,
+      .ai-prediction-scorers {
+        align-items: baseline;
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+      }
+
+      .ai-prediction-head {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+      }
+
+      .ai-prediction-head span {
+        background: var(--lime);
+        color: var(--ink);
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        padding: 0.22rem 0.45rem;
+      }
+
+      .ai-prediction-head strong {
+        color: var(--lime);
+        font-size: 1rem;
+      }
+
+      .ai-prediction-score,
+      .ai-prediction-scorers {
+        font-size: 0.85rem;
+        line-height: 1.55;
+        margin-top: 0.45rem;
+      }
+
+      .ai-prediction-score span,
+      .ai-prediction-scorers span {
+        color: #b9c0bd;
+        flex: 0 0 4.5rem;
+      }
+
+      .ai-prediction-score b,
+      .ai-prediction-scorers b {
+        text-align: right;
+      }
+
+      .ai-prediction > p {
+        color: #aeb7b3;
+        font-size: 0.72rem;
+        line-height: 1.5;
+        margin: 0.85rem 0 0;
+      }
+
       .match-card[data-result="win"] { border-top-color: #68a600; }
       .match-card[data-result="draw"] { border-top-color: #d39b00; }
       .match-card[data-result="loss"] { border-top-color: #b53a3a; }
