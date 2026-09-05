@@ -19,6 +19,26 @@
   <main class="page-main">
     <section class="section squad-section">
       <div class="section-heading"><div><p class="eyebrow">SQUAD</p><h2>球队阵容</h2></div><p class="section-note">球员资料将随阵容扩充持续补充</p></div>
+      <div class="player-sort-bar" aria-label="球员排序">
+        <span class="player-sort-title">球员排序</span>
+        <div class="player-sort-controls">
+          <label for="player-sort-field">排序依据
+            <select id="player-sort-field">
+              <option value="name" selected>姓名拼音</option>
+              <option value="goals">进球数</option>
+              <option value="assists">助攻数</option>
+              <option value="number">球衣号码</option>
+              <option value="appearances">比赛场次</option>
+            </select>
+          </label>
+          <label for="player-sort-direction">排列顺序
+            <select id="player-sort-direction">
+              <option value="asc" selected>升序</option>
+              <option value="desc">降序</option>
+            </select>
+          </label>
+        </div>
+      </div>
       <div class="player-grid" id="player-grid"><p class="empty-message">正在读取阵容……</p></div>
     </section>
   </main>
