@@ -1077,5 +1077,15 @@ window.NOVA_DATA = {
         }
       ]
     }
+  ],
+  "futureMatches": [
+    {
+      "id": "upcoming-20260911-oldream",
+      "date": "2026-09-11",
+      "time": "",
+      "matchType": "",
+      "venue": "西区操场",
+      "opponent": "Oldream"
+    }
   ]
 };
