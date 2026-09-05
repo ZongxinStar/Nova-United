@@ -988,7 +988,7 @@ window.NOVA_DATA = {
     },
     {
       "id": "match-20260604-oldream-friendly",
-      "date": "2026-06-04",
+      "date": "2026-05-17",
       "time": "12:00",
       "matchType": "友谊赛",
       "venue": "西区操场",
