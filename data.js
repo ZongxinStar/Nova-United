@@ -779,6 +779,121 @@ window.NOVA_DATA = {
           "goalkeeper": false
         }
       ]
+    },
+    {
+      "id": "match-20260326-mygoal",
+      "date": "2026-03-26",
+      "time": "12:18",
+      "matchType": "2026年八人制",
+      "venue": "西区操场",
+      "opponent": "mygoal",
+      "opponentGoals": 7,
+      "lineup": [
+        {
+          "playerId": "player-1788480089268-5-txjpc",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": true,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480270799-9-64n46",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480148443-8-zjvyc",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449659701-2",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "player-1788480304489-10-pofqu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503151602-14-1bu7m",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503168680-15-3tnjl",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480075275-4-4nenu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480314719-11-th2iv",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480660786-13-t3uvj",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449743936-3",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480106645-6-lmggw",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "yin-zongxin",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
     }
   ]
 };
