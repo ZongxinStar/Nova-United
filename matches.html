@@ -18,8 +18,15 @@
   </header>
   <main class="page-main">
     <section class="section matches-section">
-      <div class="section-heading"><div><p class="eyebrow">MATCHES</p><h2>比赛记录</h2></div><p class="section-note">赛程 · 阵容 · 进球 · 助攻</p></div>
-      <div class="match-grid" id="match-grid"><p class="empty-message">正在读取比赛记录……</p></div>
+      <div class="section-heading"><div><p class="eyebrow">MATCHES</p><h2>比赛</h2></div><p class="section-note">未来赛程 · 已完成比赛</p></div>
+      <section class="match-group upcoming-match-group" aria-labelledby="upcoming-match-title">
+        <div class="match-group-heading"><div><p class="eyebrow">UPCOMING</p><h3 id="upcoming-match-title">未来比赛</h3></div><p>等待下一次并肩出发</p></div>
+        <div class="match-grid" id="upcoming-match-grid"><p class="empty-message">正在读取未来比赛……</p></div>
+      </section>
+      <section class="match-group completed-match-group" aria-labelledby="completed-match-title">
+        <div class="match-group-heading"><div><p class="eyebrow">RESULTS</p><h3 id="completed-match-title">已完成比赛</h3></div><p>阵容 · 进球 · 助攻</p></div>
+        <div class="match-grid" id="match-grid"><p class="empty-message">正在读取比赛记录……</p></div>
+      </section>
     </section>
   </main>
   <footer><div class="footer-brand">NOVA UNITED</div><p>球队官网 · 数据持续更新</p></footer>
