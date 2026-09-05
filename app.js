@@ -196,10 +196,37 @@
     }
   }
 
+  const playerNameCollator = new Intl.Collator("zh-CN-u-co-pinyin", {
+    numeric: true,
+    sensitivity: "base"
+  });
+
+  function comparePlayersForDisplay(a, b, field, direction) {
+    let comparison = 0;
+
+    if (field === "name") {
+      comparison = playerNameCollator.compare(a.name, b.name);
+    } else if (field === "number") {
+      const aHasNumber = a.number != null;
+      const bHasNumber = b.number != null;
+      if (aHasNumber !== bHasNumber) return aHasNumber ? -1 : 1;
+      comparison = safeInt(a.number) - safeInt(b.number);
+    } else {
+      comparison = safeInt(a[field]) - safeInt(b[field]);
+    }
+
+    if (comparison === 0) return playerNameCollator.compare(a.name, b.name);
+    return direction === "desc" ? -comparison : comparison;
+  }
+
   function renderPlayers() {
     const container = document.getElementById("player-grid");
     if (!container) return;
-    const players = playerTotals();
+    const sortField = document.getElementById("player-sort-field")?.value || "name";
+    const sortDirection = document.getElementById("player-sort-direction")?.value || "asc";
+    const players = [...playerTotals()].sort((a, b) =>
+      comparePlayersForDisplay(a, b, sortField, sortDirection)
+    );
     container.innerHTML = players.length ? players.map((player, index) => {
       const numberLabel = player.number == null ? "号码待定" : `#${player.number}`;
       const positions = positionLabel(player);
@@ -218,7 +245,8 @@
     const container = document.getElementById("match-grid");
     if (!container) return;
     const playerMap = new Map(data.players.map(player => [player.id, player]));
-    const matches = [...data.matches].sort((a, b) => `${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`));
+    const matchSortKey = match => `${match.date || "0000-00-00"}T${match.time || "00:00"}`;
+    const matches = [...data.matches].sort((a, b) => matchSortKey(b).localeCompare(matchSortKey(a)));
     container.innerHTML = matches.length ? matches.map(match => {
       const goals = teamGoals(match);
       const result = goals > match.opponentGoals ? "win" : goals < match.opponentGoals ? "loss" : "draw";
@@ -574,6 +602,11 @@
       event.returnValue = "";
     });
   }
+
+  const playerSortField = document.getElementById("player-sort-field");
+  const playerSortDirection = document.getElementById("player-sort-direction");
+  playerSortField?.addEventListener("change", renderPlayers);
+  playerSortDirection?.addEventListener("change", renderPlayers);
 
   renderAll();
 })();
