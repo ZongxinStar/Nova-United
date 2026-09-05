@@ -81,6 +81,17 @@
     };
   }
 
+  function normalizeUpcomingMatch(match, index) {
+    return {
+      id: String(match.id || makeId("upcoming-match", index)),
+      date: String(match.date || ""),
+      time: String(match.time || ""),
+      matchType: String(match.matchType || match["比赛类型"] || "").trim(),
+      venue: String(match.venue || "").trim(),
+      opponent: String(match.opponent || "").trim()
+    };
+  }
+
   function normalizeData(raw) {
     const team = raw && raw.team ? raw.team : { name: "Nova United", season: "2026" };
     const players = Array.isArray(raw?.players) ? raw.players.map(normalizePlayer) : [];
@@ -88,7 +99,10 @@
     const matches = Array.isArray(raw?.matches)
       ? raw.matches.map((match, index) => normalizeMatch(match, index, playerIds))
       : [];
-    return { team, players, matches };
+    const futureMatches = Array.isArray(raw?.futureMatches)
+      ? raw.futureMatches.map(normalizeUpcomingMatch)
+      : [];
+    return { team, players, matches, futureMatches };
   }
 
   function stat(label, value) {
@@ -241,6 +255,21 @@
     attachPhotoFallbacks(container);
   }
 
+  function renderUpcomingMatches() {
+    const container = document.getElementById("upcoming-match-grid");
+    if (!container) return;
+    const matchSortKey = match => `${match.date || "9999-12-31"}T${match.time || "23:59"}`;
+    const matches = [...data.futureMatches].sort((a, b) => matchSortKey(a).localeCompare(matchSortKey(b)));
+    container.innerHTML = matches.length ? matches.map(match => `<article class="match-card upcoming-match-card" data-result="upcoming">
+      <div class="match-meta"><span>${escapeHTML(formatDate(match.date))}${match.matchType ? ` · ${escapeHTML(match.matchType)}` : ""}</span><span class="match-result upcoming-status">待开赛</span></div>
+      <div class="match-scoreline"><h3>Nova United <span>vs</span> ${escapeHTML(match.opponent || "对手待定")}</h3><div class="upcoming-kickoff">${escapeHTML(match.time || "时间待定")}</div></div>
+      <div class="match-details">
+        <div class="match-detail-row"><b>比赛地点</b><span>${escapeHTML(match.venue || "地点待定")}</span></div>
+        <div class="match-detail-row"><b>开球时间</b><span>${escapeHTML(match.time || "待定")}</span></div>
+      </div>
+    </article>`).join("") : '<p class="empty-message">暂时没有未来比赛安排。</p>';
+  }
+
   function renderMatches() {
     const container = document.getElementById("match-grid");
     if (!container) return;
@@ -337,6 +366,7 @@
     window.NOVA_DATA = data;
     renderHome();
     renderPlayers();
+    renderUpcomingMatches();
     renderMatches();
     renderRankings();
     renderManager();
