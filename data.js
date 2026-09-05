@@ -14,7 +14,7 @@ window.NOVA_DATA = {
         "中锋",
         "左边锋"
       ],
-      "photo": "",
+      "photo": "images/players/yin-zongxin.webp",
       "appearances": 0,
       "goals": 0,
       "assists": 0
