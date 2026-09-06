@@ -212,26 +212,28 @@
       }
       
       .player-number {
-        font-size: clamp(11rem, 20vw, 19rem);
+        font-size: clamp(8rem, 13vw, 12rem);
         font-weight: 900;
-        left: 1rem;
-        letter-spacing: -0.13em;
+        left: 1.4rem;
+        letter-spacing: -0.08em;
         line-height: 0.85;
-        opacity: 0.94;
+        opacity: 0.9;
         position: absolute;
-        top: 90px;
+        top: 92px;
       }
       
       .spotlight-name,
       .player-name {
-        bottom: 130px;
+        bottom: 125px;
+        left: 2rem;
+        max-width: calc(100% - 4rem);
         position: absolute;
         z-index: 2;
       }
       
       .spotlight-name p,
       .player-name p {
-        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-size: clamp(2rem, 3.2vw, 3rem);
         font-weight: 900;
         letter-spacing: -0.05em;
         margin: 0;
@@ -1266,7 +1268,13 @@
         }
       
         .player-number {
-          font-size: 16rem;
+          font-size: 11rem;
+          top: 85px;
+        }
+
+        .spotlight-name,
+        .player-name {
+          bottom: 115px;
         }
       
         .ranking-grid {
@@ -1361,13 +1369,16 @@
         }
       
         .player-number {
-          font-size: 11rem;
-          top: 75px;
+          font-size: 8rem;
+          left: 1.1rem;
+          top: 70px;
         }
       
         .spotlight-name,
-      .player-name {
-          bottom: 110px;
+        .player-name {
+          bottom: 100px;
+          left: 1.3rem;
+          max-width: calc(100% - 2.6rem);
         }
       
         .spotlight-stats {
