@@ -201,7 +201,8 @@
         width: 330px;
       }
       
-      .spotlight-top {
+      .spotlight-top,
+      .spotlight-label {
         display: flex;
         font-size: 0.7rem;
         font-weight: 900;
@@ -221,20 +222,23 @@
         top: 90px;
       }
       
-      .spotlight-name {
+      .spotlight-name,
+      .player-name {
         bottom: 130px;
         position: absolute;
         z-index: 2;
       }
       
-      .spotlight-name p {
+      .spotlight-name p,
+      .player-name p {
         font-size: clamp(2rem, 4vw, 3.5rem);
         font-weight: 900;
         letter-spacing: -0.05em;
         margin: 0;
       }
       
-      .spotlight-name span {
+      .spotlight-name span,
+      .player-name span {
         font-size: 0.72rem;
         font-weight: 900;
         letter-spacing: 0.18em;
@@ -248,6 +252,23 @@
         left: 2rem;
         position: absolute;
         right: 2rem;
+      }
+      
+      .spotlight-label,
+      .player-number,
+      .player-name,
+      .spotlight-stats {
+        transition:
+          opacity 320ms ease,
+          transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .spotlight.is-changing .spotlight-label,
+      .spotlight.is-changing .player-number,
+      .spotlight.is-changing .player-name,
+      .spotlight.is-changing .spotlight-stats {
+        opacity: 0;
+        transform: translateY(14px);
       }
       
       .spotlight-stats div,
@@ -1344,7 +1365,8 @@
           top: 75px;
         }
       
-        .spotlight-name {
+        .spotlight-name,
+      .player-name {
           bottom: 110px;
         }
       
@@ -1571,6 +1593,13 @@
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
+        }
+
+        .spotlight-label,
+        .player-number,
+        .player-name,
+        .spotlight-stats {
+          transition: none;
         }
       }
       
