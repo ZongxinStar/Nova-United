@@ -208,42 +208,98 @@
         font-weight: 900;
         justify-content: space-between;
         letter-spacing: 0.14em;
+        position: relative;
         text-transform: uppercase;
+        z-index: 2;
+      }
+      
+      .spotlight-main {
+        bottom: 82px;
+        display: grid;
+        gap: 1.4rem;
+        grid-template-columns: minmax(0, 0.9fr) minmax(145px, 1.1fr);
+        left: 2rem;
+        position: absolute;
+        right: 2rem;
+        top: 4.4rem;
+        z-index: 1;
+      }
+
+      .spotlight-identity {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
       }
       
       .player-number {
-        font-size: clamp(8rem, 13vw, 12rem);
+        align-items: center;
+        display: flex;
+        flex: 1;
+        font-size: clamp(4.8rem, 6vw, 6.5rem);
         font-weight: 900;
-        left: 1.4rem;
-        letter-spacing: -0.08em;
+        letter-spacing: -0.14em;
         line-height: 0.85;
         opacity: 0.9;
-        position: absolute;
-        top: 92px;
+        white-space: nowrap;
       }
       
       .spotlight-name,
       .player-name {
-        bottom: 125px;
-        left: 2rem;
-        max-width: calc(100% - 4rem);
-        position: absolute;
+        max-width: 100%;
+        padding-bottom: 1.2rem;
         z-index: 2;
       }
       
       .spotlight-name p,
       .player-name p {
-        font-size: clamp(2rem, 3.2vw, 3rem);
+        font-size: clamp(1.8rem, 2.6vw, 2.65rem);
         font-weight: 900;
         letter-spacing: -0.05em;
+        line-height: 1;
         margin: 0;
       }
       
       .spotlight-name span,
       .player-name span {
-        font-size: 0.72rem;
+        font-size: 0.68rem;
         font-weight: 900;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.16em;
+      }
+
+      .spotlight-photo {
+        background: var(--ink);
+        border: 1px solid rgba(10, 17, 16, 0.28);
+        box-shadow: 10px 10px 0 rgba(10, 17, 16, 0.12);
+        min-width: 0;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .spotlight-photo img {
+        display: block;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        width: 100%;
+      }
+
+      .spotlight-photo span {
+        align-items: center;
+        background:
+          linear-gradient(135deg, rgba(200, 255, 57, 0.12), transparent 60%),
+          var(--ink);
+        color: var(--lime);
+        display: flex;
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-weight: 900;
+        height: 100%;
+        justify-content: center;
+        letter-spacing: -0.08em;
+        width: 100%;
+      }
+
+      .spotlight-photo [hidden] {
+        display: none;
       }
       
       .spotlight-stats {
@@ -254,11 +310,13 @@
         left: 2rem;
         position: absolute;
         right: 2rem;
+        z-index: 2;
       }
       
       .spotlight-label,
       .player-number,
       .player-name,
+      .spotlight-photo,
       .spotlight-stats {
         transition:
           opacity 320ms ease,
@@ -268,6 +326,7 @@
       .spotlight.is-changing .spotlight-label,
       .spotlight.is-changing .player-number,
       .spotlight.is-changing .player-name,
+      .spotlight.is-changing .spotlight-photo,
       .spotlight.is-changing .spotlight-stats {
         opacity: 0;
         transform: translateY(14px);
@@ -1267,14 +1326,12 @@
           min-height: 460px;
         }
       
-        .player-number {
-          font-size: 11rem;
-          top: 85px;
+        .spotlight-main {
+          grid-template-columns: minmax(0, 0.9fr) minmax(220px, 1.1fr);
         }
 
-        .spotlight-name,
-        .player-name {
-          bottom: 115px;
+        .player-number {
+          font-size: 6.5rem;
         }
       
         .ranking-grid {
@@ -1368,17 +1425,25 @@
           padding: 1.3rem;
         }
       
-        .player-number {
-          font-size: 8rem;
-          left: 1.1rem;
-          top: 70px;
-        }
-      
-        .spotlight-name,
-        .player-name {
-          bottom: 100px;
+        .spotlight-main {
+          bottom: 78px;
+          gap: 0.8rem;
+          grid-template-columns: minmax(0, 1.05fr) minmax(108px, 0.95fr);
           left: 1.3rem;
-          max-width: calc(100% - 2.6rem);
+          right: 1.3rem;
+          top: 3.8rem;
+        }
+
+        .player-number {
+          font-size: 4.6rem;
+        }
+
+        .player-name {
+          padding-bottom: 0.85rem;
+        }
+
+        .player-name p {
+          font-size: 1.75rem;
         }
       
         .spotlight-stats {
@@ -1609,6 +1674,7 @@
         .spotlight-label,
         .player-number,
         .player-name,
+        .spotlight-photo,
         .spotlight-stats {
           transition: none;
         }
