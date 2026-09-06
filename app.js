@@ -210,11 +210,35 @@
   function renderSpotlightPlayer(players, index) {
     const player = players[index];
     const playerLabel = document.querySelector(".spotlight-label");
+    const heroPhoto = document.getElementById("hero-photo");
+    const photoPlaceholder = document.getElementById("hero-photo-placeholder");
     document.getElementById("hero-number").textContent = player?.number ?? "—";
     document.getElementById("hero-name").textContent = player?.name || "等待球员数据";
     document.getElementById("hero-stats").innerHTML = player
       ? stat("出场", player.appearances) + stat("进球", player.goals) + stat("助攻", player.assists)
       : "";
+
+    if (heroPhoto && photoPlaceholder) {
+      photoPlaceholder.textContent = player?.name ? player.name.slice(0, 2) : "NU";
+      const showPhotoPlaceholder = () => {
+        heroPhoto.hidden = true;
+        photoPlaceholder.hidden = false;
+      };
+
+      if (player?.photo) {
+        heroPhoto.onerror = showPhotoPlaceholder;
+        heroPhoto.alt = `${player.name}的球员照片`;
+        heroPhoto.hidden = false;
+        photoPlaceholder.hidden = true;
+        heroPhoto.src = player.photo;
+      } else {
+        heroPhoto.onerror = null;
+        heroPhoto.removeAttribute("src");
+        heroPhoto.alt = "";
+        showPhotoPlaceholder();
+      }
+    }
+
     if (playerLabel) {
       playerLabel.textContent = player
         ? `PLAYER ${String(index + 1).padStart(2, "0")} / ${String(players.length).padStart(2, "0")}`
