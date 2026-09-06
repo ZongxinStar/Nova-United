@@ -1463,7 +1463,7 @@
       .news-list {
         display: grid;
         gap: 1.4rem;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         margin-top: 2.25rem;
       }
 
@@ -1552,6 +1552,10 @@
       @media (max-width: 600px) {
         .main-nav {
           gap: 0.45rem;
+        }
+
+        .news-list {
+          grid-template-columns: 1fr;
         }
 
         .main-nav a {
