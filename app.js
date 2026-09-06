@@ -5,6 +5,9 @@
   let editingPlayerIndex = -1;
   let editingMatchIndex = -1;
   let hasUnsavedExport = false;
+  let spotlightPlayerIndex = 0;
+  let spotlightInterval = null;
+  let spotlightTransitionTimeout = null;
 
   const playerForm = document.getElementById("player-form");
   const matchForm = document.getElementById("match-form");
@@ -204,15 +207,53 @@
     return b[board.field] - a[board.field] || a.name.localeCompare(b.name, "zh-CN");
   }
 
+  function renderSpotlightPlayer(players, index) {
+    const player = players[index];
+    const playerLabel = document.querySelector(".spotlight-label");
+    document.getElementById("hero-number").textContent = player?.number ?? "—";
+    document.getElementById("hero-name").textContent = player?.name || "等待球员数据";
+    document.getElementById("hero-stats").innerHTML = player
+      ? stat("出场", player.appearances) + stat("进球", player.goals) + stat("助攻", player.assists)
+      : "";
+    if (playerLabel) {
+      playerLabel.textContent = player
+        ? `PLAYER ${String(index + 1).padStart(2, "0")} / ${String(players.length).padStart(2, "0")}`
+        : "PLAYER 00";
+    }
+  }
+
+  function startSpotlightRotation(players) {
+    const spotlight = document.querySelector(".spotlight");
+    if (!spotlight) return;
+
+    window.clearInterval(spotlightInterval);
+    window.clearTimeout(spotlightTransitionTimeout);
+    spotlightPlayerIndex = players.length ? spotlightPlayerIndex % players.length : 0;
+    renderSpotlightPlayer(players, spotlightPlayerIndex);
+
+    if (players.length < 2) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    spotlightInterval = window.setInterval(() => {
+      spotlightPlayerIndex = (spotlightPlayerIndex + 1) % players.length;
+
+      if (reducedMotion) {
+        renderSpotlightPlayer(players, spotlightPlayerIndex);
+        return;
+      }
+
+      spotlight.classList.add("is-changing");
+      spotlightTransitionTimeout = window.setTimeout(() => {
+        renderSpotlightPlayer(players, spotlightPlayerIndex);
+        window.requestAnimationFrame(() => spotlight.classList.remove("is-changing"));
+      }, 320);
+    }, 5000);
+  }
+
   function renderHome() {
     const heroNumber = document.getElementById("hero-number");
     if (!heroNumber) return;
-    const firstPlayer = playerTotals()[0];
-    heroNumber.textContent = firstPlayer?.number ?? "—";
-    document.getElementById("hero-name").textContent = firstPlayer?.name || "等待球员数据";
-    document.getElementById("hero-stats").innerHTML = firstPlayer
-      ? stat("出场", firstPlayer.appearances) + stat("进球", firstPlayer.goals) + stat("助攻", firstPlayer.assists)
-      : "";
+    startSpotlightRotation(playerTotals());
     const seasonGrid = document.getElementById("season-record-grid");
     if (seasonGrid) {
       const record = seasonRecord();
