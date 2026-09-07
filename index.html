@@ -14,7 +14,7 @@
       display: flex;
       gap: 1px;
       margin: 2rem 0 1.8rem;
-      max-width: 430px;
+      max-width: 660px;
     }
     .site-live-stat {
       align-items: center;
@@ -86,6 +86,11 @@
             <strong id="total-clicks">—</strong>
             <span>累计新闻点击</span>
           </div>
+          <div class="site-live-stat">
+            <span class="stat-symbol" aria-hidden="true">+</span>
+            <strong id="site-clicks">—</strong>
+            <span>网站总计点击</span>
+          </div>
         </div>
         <a class="hero-link" href="stats.html">查看球队数据 <span aria-hidden="true">↘</span></a>
       </div>
@@ -116,51 +121,6 @@
   <script src="data.js"></script>
   <script src="app.js"></script>
 
-  <script>
-    (() => {
-      const API_BASE = "https://link-click-counter.yzx08080808.workers.dev";
-      const VISITOR_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      const onlineCount = document.getElementById("online-count");
-      const totalClicks = document.getElementById("total-clicks");
-      let visitorId;
 
-      try {
-        visitorId = localStorage.getItem("nova-united-visitor-id");
-        if (!VISITOR_ID_PATTERN.test(visitorId || "")) {
-          visitorId = crypto.randomUUID();
-          localStorage.setItem("nova-united-visitor-id", visitorId);
-        }
-      } catch {
-        visitorId = crypto.randomUUID();
-      }
-
-      function renderStats(data) {
-        onlineCount.textContent = String(Number(data.online) || 0);
-        totalClicks.textContent = String(Number(data.totalClicks) || 0);
-      }
-
-      async function heartbeat() {
-        if (document.visibilityState === "hidden") return;
-        try {
-          const response = await fetch(API_BASE + "/api/presence", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ visitorId }),
-            cache: "no-store"
-          });
-          if (!response.ok) return;
-          renderStats(await response.json());
-        } catch {
-          // Keep the last successfully loaded values.
-        }
-      }
-
-      void heartbeat();
-      window.setInterval(() => { void heartbeat(); }, 15000);
-      document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") void heartbeat();
-      });
-    })();
-  </script>
 </body>
 </html>
