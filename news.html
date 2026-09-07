@@ -48,5 +48,98 @@
     </section>
   </main>
   <footer><div class="footer-brand">NOVA UNITED</div><p>球队官网 · 数据持续更新</p></footer>
+  <style>
+    .news-click-count {
+      display: block;
+      margin-top: 0.55rem;
+      color: #d9dfdc;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+    }
+  </style>
+  <script>
+    (() => {
+      const API_BASE = "https://link-click-counter.yzx08080808.workers.dev";
+      const cards = Array.from(document.querySelectorAll(".news-card"));
+
+      function getLinkId(card) {
+        try {
+          const parts = new URL(card.href).pathname.split("/").filter(Boolean);
+          const articleId = parts[parts.length - 1];
+          return articleId ? "news-" + articleId : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function ensureCounter(card) {
+        let counter = card.querySelector(".news-click-count");
+        if (!counter) {
+          counter = document.createElement("span");
+          counter.className = "news-click-count";
+          counter.textContent = "0 次点击";
+          const body = card.querySelector(".news-card-body");
+          if (body) body.append(counter);
+        }
+        return counter;
+      }
+
+      const trackedCards = cards
+        .map((card) => ({
+          card,
+          linkId: getLinkId(card),
+          counter: ensureCounter(card),
+        }))
+        .filter((item) => item.linkId && item.counter);
+
+      function applyCounts(rows) {
+        const counts = new Map(
+          rows.map((row) => [row.link_id, Number(row.clicks) || 0]),
+        );
+
+        trackedCards.forEach(({ linkId, counter }) => {
+          counter.textContent = (counts.get(linkId) || 0) + " 次点击";
+        });
+      }
+
+      async function loadCounts() {
+        try {
+          const response = await fetch(API_BASE + "/api/counts", {
+            cache: "no-store",
+          });
+          if (!response.ok) return;
+
+          const data = await response.json();
+          applyCounts(Array.isArray(data.counts) ? data.counts : []);
+        } catch {
+          // 网络暂时不可用时保留上一次显示的点击量。
+        }
+      }
+
+      trackedCards.forEach(({ card, linkId, counter }) => {
+        card.addEventListener("click", () => {
+          void fetch(API_BASE + "/api/click", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ linkId }),
+            keepalive: true,
+          })
+            .then((response) => (response.ok ? response.json() : null))
+            .then((data) => {
+              if (data && Number.isFinite(Number(data.clicks))) {
+                counter.textContent = Number(data.clicks) + " 次点击";
+              }
+            })
+            .catch(() => {});
+        });
+      });
+
+      void loadCounts();
+      window.setInterval(() => {
+        void loadCounts();
+      }, 3000);
+    })();
+  </script>
+
 </body>
 </html>
