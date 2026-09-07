@@ -7,6 +7,53 @@
   <title>Nova United · 首页</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .site-live-stats {
+      background: #34403c;
+      display: flex;
+      gap: 1px;
+      margin: 2rem 0 1.8rem;
+      max-width: 430px;
+    }
+    .site-live-stat {
+      align-items: center;
+      background: var(--ink-soft);
+      display: grid;
+      flex: 1;
+      gap: 0.55rem;
+      grid-template-columns: auto auto 1fr;
+      min-width: 0;
+      padding: 1rem 1.1rem;
+    }
+    .site-live-stat strong {
+      color: var(--lime);
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+    .site-live-stat > span:last-child {
+      color: #aeb8b4;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .live-indicator {
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(200, 255, 57, 0.12);
+      height: 8px;
+      width: 8px;
+    }
+    .stat-symbol {
+      color: var(--mint);
+      font-size: 0.8rem;
+      font-weight: 900;
+    }
+    @media (max-width: 600px) {
+      .site-live-stats { max-width: none; }
+      .site-live-stat { padding: 0.9rem; }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -27,6 +74,19 @@
         <p class="eyebrow">NOVA UNITED · TEAM DATABASE</p>
         <h1>向下一场<br><span>胜利</span>前进</h1>
         <p class="hero-intro">球队阵容与数据中心。比赛记录加入后，射手榜、助攻榜和出场榜将持续更新。</p>
+
+        <div class="site-live-stats" aria-label="网站实时数据">
+          <div class="site-live-stat">
+            <span class="live-indicator" aria-hidden="true"></span>
+            <strong id="online-count">—</strong>
+            <span>同时在线</span>
+          </div>
+          <div class="site-live-stat">
+            <span class="stat-symbol" aria-hidden="true">Σ</span>
+            <strong id="total-clicks">—</strong>
+            <span>累计新闻点击</span>
+          </div>
+        </div>
         <a class="hero-link" href="stats.html">查看球队数据 <span aria-hidden="true">↘</span></a>
       </div>
       <aside class="spotlight" aria-label="焦点球员">
@@ -55,5 +115,52 @@
   <footer><div class="footer-brand">NOVA UNITED</div><p>球队官网 · 数据持续更新</p></footer>
   <script src="data.js"></script>
   <script src="app.js"></script>
+
+  <script>
+    (() => {
+      const API_BASE = "https://link-click-counter.yzx08080808.workers.dev";
+      const VISITOR_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      const onlineCount = document.getElementById("online-count");
+      const totalClicks = document.getElementById("total-clicks");
+      let visitorId;
+
+      try {
+        visitorId = localStorage.getItem("nova-united-visitor-id");
+        if (!VISITOR_ID_PATTERN.test(visitorId || "")) {
+          visitorId = crypto.randomUUID();
+          localStorage.setItem("nova-united-visitor-id", visitorId);
+        }
+      } catch {
+        visitorId = crypto.randomUUID();
+      }
+
+      function renderStats(data) {
+        onlineCount.textContent = String(Number(data.online) || 0);
+        totalClicks.textContent = String(Number(data.totalClicks) || 0);
+      }
+
+      async function heartbeat() {
+        if (document.visibilityState === "hidden") return;
+        try {
+          const response = await fetch(API_BASE + "/api/presence", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ visitorId }),
+            cache: "no-store"
+          });
+          if (!response.ok) return;
+          renderStats(await response.json());
+        } catch {
+          // Keep the last successfully loaded values.
+        }
+      }
+
+      void heartbeat();
+      window.setInterval(() => { void heartbeat(); }, 15000);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") void heartbeat();
+      });
+    })();
+  </script>
 </body>
 </html>
