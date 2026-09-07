@@ -730,5 +730,69 @@
   playerSortField?.addEventListener("change", renderPlayers);
   playerSortDirection?.addEventListener("change", renderPlayers);
 
+
+  function startSiteAnalytics() {
+    const apiBase = "https://link-click-counter.yzx08080808.workers.dev";
+    const visitorPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const onlineOutput = document.getElementById("online-count");
+    const newsClicksOutput = document.getElementById("total-clicks");
+    const siteClicksOutput = document.getElementById("site-clicks");
+    let visitorId;
+
+    try {
+      visitorId = localStorage.getItem("nova-united-visitor-id");
+      if (!visitorPattern.test(visitorId || "")) {
+        visitorId = crypto.randomUUID();
+        localStorage.setItem("nova-united-visitor-id", visitorId);
+      }
+    } catch {
+      visitorId = crypto.randomUUID();
+    }
+
+    function renderSiteStats(stats) {
+      if (onlineOutput) onlineOutput.textContent = String(Number(stats.online) || 0);
+      if (newsClicksOutput) newsClicksOutput.textContent = String(Number(stats.totalClicks) || 0);
+      if (siteClicksOutput) siteClicksOutput.textContent = String(Number(stats.siteClicks) || 0);
+    }
+
+    async function heartbeat() {
+      if (document.visibilityState === "hidden") return;
+      try {
+        const response = await fetch(apiBase + "/api/presence", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ visitorId }),
+          cache: "no-store"
+        });
+        if (response.ok) renderSiteStats(await response.json());
+      } catch {
+        // Keep the last successfully loaded values.
+      }
+    }
+
+    document.addEventListener("click", event => {
+      const target = event.target instanceof Element
+        ? event.target.closest("a, button, [role='button'], input[type='button'], input[type='submit']")
+        : null;
+      if (!target || target.matches(":disabled, [aria-disabled='true']")) return;
+
+      void fetch(apiBase + "/api/site-click", {
+        method: "POST",
+        keepalive: true,
+        cache: "no-store"
+      })
+        .then(response => response.ok ? response.json() : null)
+        .then(stats => { if (stats) renderSiteStats(stats); })
+        .catch(() => {});
+    }, { capture: true });
+
+    void heartbeat();
+    window.setInterval(() => { void heartbeat(); }, 15000);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") void heartbeat();
+    });
+  }
+
+  startSiteAnalytics();
   renderAll();
 })();
