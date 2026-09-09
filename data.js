@@ -1192,7 +1192,7 @@ window.NOVA_DATA = {
       "time": "",
       "matchType": "",
       "venue": "西区操场",
-      "opponent": "Oldream",
+      "opponent": "26雏鹰杯化院队伍",
       "prediction": {
         "outcome": "Nova United 获胜",
         "teamGoals": 3,
