@@ -142,9 +142,9 @@
     return data.players.map(player => totals.get(player.id));
   }
 
-  function seasonRecord() {
-    const record = { played: data.matches.length, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0 };
-    data.matches.forEach(match => {
+  function seasonRecord(matches = data.matches) {
+    const record = { played: matches.length, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0 };
+    matches.forEach(match => {
       const goals = teamGoals(match);
       record.goalsFor += goals;
       record.goalsAgainst += match.opponentGoals;
@@ -154,6 +154,18 @@
     });
     record.goalDifference = record.goalsFor - record.goalsAgainst;
     return record;
+  }
+
+  function renderSeasonRecordGrid(grid, record) {
+    if (!grid) return;
+    const items = [
+      ["比赛", record.played], ["胜", record.wins], ["平", record.draws], ["负", record.losses],
+      ["进球", record.goalsFor], ["失球", record.goalsAgainst],
+      ["净胜球", record.goalDifference > 0 ? `+${record.goalDifference}` : record.goalDifference]
+    ];
+    grid.innerHTML = items.map(([label, value]) =>
+      `<div class="season-record-item"><strong>${value}</strong><span>${label}</span></div>`
+    ).join("");
   }
 
   function formatDate(date) {
@@ -278,15 +290,20 @@
     const heroNumber = document.getElementById("hero-number");
     if (!heroNumber) return;
     startSpotlightRotation(playerTotals());
-    const seasonGrid = document.getElementById("season-record-grid");
-    if (seasonGrid) {
-      const record = seasonRecord();
-      const items = [
-        ["比赛", record.played], ["胜", record.wins], ["平", record.draws], ["负", record.losses],
-        ["进球", record.goalsFor], ["失球", record.goalsAgainst], ["净胜球", record.goalDifference > 0 ? `+${record.goalDifference}` : record.goalDifference]
-      ];
-      seasonGrid.innerHTML = items.map(([label, value]) => `<div class="season-record-item"><strong>${value}</strong><span>${label}</span></div>`).join("");
-    }
+
+    const currentSeasonMatches = data.matches.filter(match => match.date >= "2026-09-01");
+    const previousSeasonMatches = data.matches.filter(match =>
+      match.date && match.date <= "2026-07-31"
+    );
+
+    renderSeasonRecordGrid(
+      document.getElementById("current-season-record-grid"),
+      seasonRecord(currentSeasonMatches)
+    );
+    renderSeasonRecordGrid(
+      document.getElementById("previous-season-record-grid"),
+      seasonRecord(previousSeasonMatches)
+    );
   }
 
   const playerNameCollator = new Intl.Collator("zh-CN-u-co-pinyin", {
