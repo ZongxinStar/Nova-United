@@ -8,11 +8,13 @@
   let spotlightPlayerIndex = 0;
   let spotlightInterval = null;
   let spotlightTransitionTimeout = null;
+  let activeRankingSeason = "all";
 
   const playerForm = document.getElementById("player-form");
   const matchForm = document.getElementById("match-form");
   const playerStatus = document.getElementById("manager-status");
   const matchStatus = document.getElementById("match-status");
+  const rankingSeasonFilter = document.getElementById("ranking-season-filter");
 
   function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>'"]/g, character => ({
@@ -130,9 +132,14 @@
     return match.lineup.reduce((sum, item) => sum + safeInt(item.goals), 0);
   }
 
-  function playerTotals() {
-    const totals = new Map(data.players.map(player => [player.id, { ...player }]));
-    data.matches.forEach(match => match.lineup.forEach(item => {
+  function playerTotals(matches = data.matches, includePlayerBase = true) {
+    const totals = new Map(data.players.map(player => [player.id, {
+      ...player,
+      appearances: includePlayerBase ? player.appearances : 0,
+      goals: includePlayerBase ? player.goals : 0,
+      assists: includePlayerBase ? player.assists : 0
+    }]));
+    matches.forEach(match => match.lineup.forEach(item => {
       const player = totals.get(item.playerId);
       if (!player) return;
       player.appearances += 1;
@@ -409,7 +416,37 @@
   function renderRankings() {
     const container = document.getElementById("ranking-grid");
     if (!container) return;
-    const players = playerTotals();
+
+    const scopes = {
+      all: {
+        label: "全部比赛",
+        matches: data.matches,
+        includePlayerBase: true
+      },
+      current: {
+        label: "2026–27 赛季",
+        matches: data.matches.filter(match => match.date >= "2026-09-01"),
+        includePlayerBase: false
+      },
+      previous: {
+        label: "2025–26 赛季",
+        matches: data.matches.filter(match => match.date && match.date <= "2026-07-31"),
+        includePlayerBase: false
+      }
+    };
+    const scope = scopes[activeRankingSeason] || scopes.all;
+    const players = playerTotals(scope.matches, scope.includePlayerBase);
+    const seasonNote = document.getElementById("ranking-season-note");
+
+    if (seasonNote) seasonNote.textContent = `当前显示：${scope.label}`;
+    if (rankingSeasonFilter) {
+      rankingSeasonFilter.querySelectorAll("[data-ranking-season]").forEach(button => {
+        const selected = button.dataset.rankingSeason === activeRankingSeason;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+
     const boards = [
       { title: "射手榜", field: "goals", unit: "球", code: "GOALS" },
       { title: "助攻榜", field: "assists", unit: "次", code: "ASSISTS" },
@@ -807,6 +844,17 @@
     window.setInterval(() => { void heartbeat(); }, 15000);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") void heartbeat();
+    });
+  }
+
+  if (rankingSeasonFilter) {
+    rankingSeasonFilter.addEventListener("click", event => {
+      const button = event.target.closest("[data-ranking-season]");
+      if (!button || !rankingSeasonFilter.contains(button)) return;
+      const nextSeason = button.dataset.rankingSeason;
+      if (!["all", "current", "previous"].includes(nextSeason)) return;
+      activeRankingSeason = nextSeason;
+      renderRankings();
     });
   }
 
