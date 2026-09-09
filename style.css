@@ -776,6 +776,66 @@
         margin: 0;
       }
 
+      .season-record-sections {
+        display: grid;
+        gap: 2.4rem;
+      }
+
+      .season-record-group + .season-record-group {
+        border-top: 1px solid #3d4945;
+        padding-top: 2.4rem;
+      }
+
+      .season-record-group-heading {
+        align-items: end;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .season-record-group-heading > div {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .season-record-group-heading h3 {
+        font-size: clamp(1.35rem, 2vw, 2rem);
+        letter-spacing: -0.035em;
+        margin: 0;
+      }
+
+      .season-record-group-heading p {
+        color: #8f9b97;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        margin: 0;
+      }
+
+      .season-status {
+        background: var(--lime);
+        color: var(--ink);
+        font-size: 0.68rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        padding: 0.3rem 0.45rem;
+      }
+
+      .season-status-previous {
+        background: #34413d;
+        color: var(--mint);
+      }
+
+      .previous-season .season-record-item {
+        background: #1d2724;
+      }
+
+      .previous-season .season-record-item strong {
+        color: var(--mint);
+      }
+
       .season-record-grid {
         display: grid;
         gap: 1px;
@@ -1469,6 +1529,12 @@
           align-items: start;
           flex-direction: column;
           gap: 0.8rem;
+        }
+
+        .season-record-group-heading {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 0.7rem;
         }
 
         .season-record-grid {
