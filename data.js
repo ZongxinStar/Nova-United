@@ -254,7 +254,7 @@ window.NOVA_DATA = {
     {
       "id": "player-20260911-chen-sihan",
       "name": "陈思涵",
-      "number": null,
+      "number": 114514,
       "positions": [],
       "photo": "",
       "appearances": 0,
@@ -264,7 +264,7 @@ window.NOVA_DATA = {
     {
       "id": "player-20260911-hu-lin",
       "name": "胡霖",
-      "number": null,
+      "number": 888,
       "positions": [],
       "photo": "",
       "appearances": 0,
@@ -274,7 +274,7 @@ window.NOVA_DATA = {
     {
       "id": "player-20260911-yang-tianhao",
       "name": "杨天浩",
-      "number": null,
+      "number": 666,
       "positions": [],
       "photo": "",
       "appearances": 0,
