@@ -90,16 +90,27 @@
     return Array.isArray(player.positions) ? player.positions.join(" / ") : "";
   }
 
+  function normalizePhotos(player) {
+    const primaryPhoto = String(player.photo || player["照片"] || "").trim();
+    const additionalPhotos = Array.isArray(player.photos) ? player.photos : [];
+    return [...new Set([
+      primaryPhoto,
+      ...additionalPhotos.map(photo => String(photo || "").trim())
+    ].filter(Boolean))];
+  }
+
   function normalizePlayer(player, index) {
     const legacyNumber = normalizeSeasonNumber(player.number);
     const seasonRecords = normalizeSeasonRecords(player, legacyNumber);
+    const photos = normalizePhotos(player);
     const normalized = {
       id: String(player.id || makeId("player", index)),
       name: String(player.name || player["姓名"] || "").trim(),
       number: seasonNumber({ seasonRecords }, CURRENT_SEASON),
       seasonRecords,
       positions: normalizePositions(player),
-      photo: String(player.photo || player["照片"] || "").trim(),
+      photo: photos[0] || "",
+      photos,
       appearances: safeInt(player.appearances ?? player["出场"]),
       goals: safeInt(player.goals ?? player["进球"]),
       assists: safeInt(player.assists ?? player["助攻"])
@@ -252,6 +263,13 @@
     return `<div class="player-avatar has-photo"><img src="${escapeHTML(player.photo)}" alt="${escapeHTML(player.name)}的照片" data-photo-fallback="${initial}"></div>`;
   }
 
+  function randomPlayerPhoto(player) {
+    const photos = Array.isArray(player?.photos) && player.photos.length
+      ? player.photos
+      : player?.photo ? [player.photo] : [];
+    return photos[Math.floor(Math.random() * photos.length)] || "";
+  }
+
   function attachPhotoFallbacks(container) {
     container.querySelectorAll("[data-photo-fallback]").forEach(image => {
       image.addEventListener("error", () => {
@@ -281,6 +299,7 @@
 
   function renderSpotlightPlayer(players, index) {
     const player = players[index];
+    const spotlightPhoto = randomPlayerPhoto(player);
     const playerLabel = document.querySelector(".spotlight-label");
     const heroPhoto = document.getElementById("hero-photo");
     const photoPlaceholder = document.getElementById("hero-photo-placeholder");
@@ -297,12 +316,12 @@
         photoPlaceholder.hidden = false;
       };
 
-      if (player?.photo) {
+      if (spotlightPhoto) {
         heroPhoto.onerror = showPhotoPlaceholder;
         heroPhoto.alt = `${player.name}的球员照片`;
         heroPhoto.hidden = false;
         photoPlaceholder.hidden = true;
-        heroPhoto.src = player.photo;
+        heroPhoto.src = spotlightPhoto;
       } else {
         heroPhoto.onerror = null;
         heroPhoto.removeAttribute("src");
@@ -748,6 +767,7 @@
           seasonRecords: collectSeasonRecordsFromForm(),
           positions: selectedPlayerPositions(),
           photo: playerForm.elements.photo.value,
+          photos: editingPlayerIndex >= 0 ? data.players[editingPlayerIndex].photos : undefined,
           appearances: playerForm.elements.appearances.value,
           goals: playerForm.elements.goals.value,
           assists: playerForm.elements.assists.value
