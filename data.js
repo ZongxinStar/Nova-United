@@ -7,7 +7,6 @@ window.NOVA_DATA = {
     {
       "id": "yin-zongxin",
       "name": "尹宗鑫",
-      "number": 7,
       "positions": [
         "左后卫",
         "左前卫",
@@ -17,12 +16,21 @@ window.NOVA_DATA = {
       "photo": "images/players/yin-zongxin.webp",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 7,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 7,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "wu-qianhe",
       "name": "吴骞翮",
-      "number": 91,
       "positions": [
         "左后卫",
         "中后卫",
@@ -32,24 +40,42 @@ window.NOVA_DATA = {
       "photo": "images/players/wu-qianhe.jpeg",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 91,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 91,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-1788449659701-2",
       "name": "杨中取",
-      "number": 14,
       "positions": [
         "门将"
       ],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 14,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788449743936-3",
       "name": "李嘉创",
-      "number": 10,
       "positions": [
         "前腰",
         "中锋"
@@ -57,12 +83,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 10,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 10,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-1788480075275-4-4nenu",
       "name": "谭理文",
-      "number": 21,
       "positions": [
         "后腰",
         "中前卫",
@@ -71,12 +106,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 21,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 21,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-1788480089268-5-txjpc",
       "name": "李星逸",
-      "number": 14,
       "positions": [
         "后腰",
         "中前卫",
@@ -87,12 +131,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 14,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 14,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-1788480106645-6-lmggw",
       "name": "蒋欣格",
-      "number": 2,
       "positions": [
         "中后卫",
         "右后卫",
@@ -101,12 +154,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 2,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788480122966-7-ek8iy",
       "name": "余林峰",
-      "number": 4,
       "positions": [
         "左后卫",
         "中后卫",
@@ -115,12 +177,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 4,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 4,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-1788480148443-8-zjvyc",
       "name": "魏子棋",
-      "number": 17,
       "positions": [
         "左前卫",
         "右前卫",
@@ -130,12 +201,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 17,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788480270799-9-64n46",
       "name": "李卓霈",
-      "number": 8,
       "positions": [
         "后腰",
         "中前卫",
@@ -145,12 +225,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 8,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788480304489-10-pofqu",
       "name": "包子涵",
-      "number": 19,
       "positions": [
         "中后卫",
         "中锋"
@@ -158,12 +247,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 19,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788480314719-11-th2iv",
       "name": "丁想",
-      "number": 15,
       "positions": [
         "左前卫",
         "右前卫",
@@ -173,12 +271,21 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 15,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 15,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-1788480644818-12-8ia7q",
       "name": "赵思博",
-      "number": 3,
       "positions": [
         "中后卫",
         "中锋"
@@ -186,60 +293,105 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 3,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788480660786-13-t3uvj",
       "name": "吴日雅",
-      "number": 5,
       "positions": [
         "中后卫"
       ],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 5,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788503151602-14-1bu7m",
       "name": "程淦",
-      "number": 13,
       "positions": [
         "中后卫"
       ],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 13,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788503168680-15-3tnjl",
       "name": "晏阳",
-      "number": 78,
       "positions": [
         "中后卫"
       ],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 78,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788503188675-16-l1clp",
       "name": "迟玮杰",
-      "number": null,
       "positions": [
         "中后卫"
       ],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": null,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": null,
+          "status": "departed"
+        }
+      }
     },
     {
       "id": "player-1788503209270-17-da5b0",
       "name": "忆蓝",
-      "number": 114,
       "positions": [
         "后腰",
         "中前卫",
@@ -249,37 +401,62 @@ window.NOVA_DATA = {
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2025-26": {
+          "number": 114,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 114,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-20260911-chen-sihan",
       "name": "陈思涵",
-      "number": 114514,
       "positions": [],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2026-27": {
+          "number": 114514,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-20260911-hu-lin",
       "name": "胡霖",
-      "number": 888,
       "positions": [],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2026-27": {
+          "number": 888,
+          "status": "active"
+        }
+      }
     },
     {
       "id": "player-20260911-yang-tianhao",
       "name": "杨天浩",
-      "number": 666,
       "positions": [],
       "photo": "",
       "appearances": 0,
       "goals": 0,
-      "assists": 0
+      "assists": 0,
+      "seasonRecords": {
+        "2026-27": {
+          "number": 666,
+          "status": "active"
+        }
+      }
     }
   ],
   "matches": [
