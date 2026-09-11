@@ -513,18 +513,7 @@
     const seasonNote = document.getElementById("ranking-season-note");
 
     if (seasonNote) seasonNote.textContent = `当前显示：${scope.label}`;
-    if (squadSeasonFilter) {
-    squadSeasonFilter.addEventListener("click", event => {
-      const button = event.target.closest("[data-squad-season]");
-      if (!button || !squadSeasonFilter.contains(button)) return;
-      const nextSeason = button.dataset.squadSeason;
-      if (![CURRENT_SEASON, PREVIOUS_SEASON].includes(nextSeason)) return;
-      activeSquadSeason = nextSeason;
-      renderPlayers();
-    });
-  }
-
-  if (rankingSeasonFilter) {
+    if (rankingSeasonFilter) {
       rankingSeasonFilter.querySelectorAll("[data-ranking-season]").forEach(button => {
         const selected = button.dataset.rankingSeason === activeRankingSeason;
         button.classList.toggle("active", selected);
@@ -996,6 +985,17 @@
     window.setInterval(() => { void heartbeat(); }, 15000);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") void heartbeat();
+    });
+  }
+
+  if (squadSeasonFilter) {
+    squadSeasonFilter.addEventListener("click", event => {
+      const button = event.target.closest("[data-squad-season]");
+      if (!button || !squadSeasonFilter.contains(button)) return;
+      const nextSeason = button.dataset.squadSeason;
+      if (![CURRENT_SEASON, PREVIOUS_SEASON].includes(nextSeason)) return;
+      activeSquadSeason = nextSeason;
+      renderPlayers();
     });
   }
 
