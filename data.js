@@ -250,6 +250,36 @@ window.NOVA_DATA = {
       "appearances": 0,
       "goals": 0,
       "assists": 0
+    },
+    {
+      "id": "player-20260911-chen-sihan",
+      "name": "陈思涵",
+      "number": null,
+      "positions": [],
+      "photo": "",
+      "appearances": 0,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "player-20260911-hu-lin",
+      "name": "胡霖",
+      "number": null,
+      "positions": [],
+      "photo": "",
+      "appearances": 0,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "player-20260911-yang-tianhao",
+      "name": "杨天浩",
+      "number": null,
+      "positions": [],
+      "photo": "",
+      "appearances": 0,
+      "goals": 0,
+      "assists": 0
     }
   ],
   "matches": [
@@ -1183,32 +1213,98 @@ window.NOVA_DATA = {
           "goalkeeper": false
         }
       ]
+    },
+    {
+      "id": "match-20260911-huayuan-eaglets",
+      "date": "2026-09-11",
+      "time": "12:00",
+      "matchType": "友谊赛",
+      "venue": "西区操场",
+      "opponent": "花园雏鹰",
+      "opponentGoals": 1,
+      "lineup": [
+        {
+          "playerId": "yin-zongxin",
+          "role": "starter",
+          "goals": 2,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "wu-qianhe",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": true,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480075275-4-4nenu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 2,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "player-1788503209270-17-da5b0",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-chen-sihan",
+          "role": "starter",
+          "goals": 1,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-hu-lin",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-yang-tianhao",
+          "role": "starter",
+          "goals": 1,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480089268-5-txjpc",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480314719-11-th2iv",
+          "role": "substitute",
+          "goals": 1,
+          "assists": 2,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449743936-3",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
     }
   ],
-  "futureMatches": [
-    {
-      "id": "upcoming-20260911-oldream",
-      "date": "2026-09-11",
-      "time": "",
-      "matchType": "",
-      "venue": "西区操场",
-      "opponent": "26雏鹰杯化院队伍",
-      "prediction": {
-        "outcome": "Nova United 获胜",
-        "teamGoals": 3,
-        "opponentGoals": 2,
-        "scorers": [
-          {
-            "name": "尹宗鑫",
-            "goals": 2
-          },
-          {
-            "name": "李嘉创",
-            "goals": 1
-          }
-        ],
-        "basis": "参考对阵 Oldream 的1胜1平及当前射手数据"
-      }
-    }
-  ]
+  "futureMatches": []
 };
