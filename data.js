@@ -66,10 +66,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 14,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -159,10 +155,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 2,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -206,10 +198,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 17,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -230,10 +218,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 8,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -252,10 +236,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 19,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -298,10 +278,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 3,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -319,10 +295,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 5,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -340,10 +312,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 13,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -361,10 +329,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 78,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
@@ -382,10 +346,6 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": null,
           "status": "active"
-        },
-        "2026-27": {
-          "number": null,
-          "status": "departed"
         }
       }
     },
