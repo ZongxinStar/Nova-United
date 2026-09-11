@@ -42,6 +42,10 @@ window.NOVA_DATA = {
         "右边锋"
       ],
       "photo": "images/players/wu-qianhe.jpeg",
+      "photos": [
+        "images/players/wu-qianhe.jpeg",
+        "images/players/wu-qianhe-2.jpeg"
+      ],
       "appearances": 0,
       "goals": 0,
       "assists": 0,
