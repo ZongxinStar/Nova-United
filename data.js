@@ -1302,6 +1302,14 @@ window.NOVA_DATA = {
           "assists": 0,
           "captain": false,
           "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480122966-7-ek8iy",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
         }
       ]
     }
