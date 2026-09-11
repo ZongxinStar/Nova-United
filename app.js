@@ -15,7 +15,7 @@
   let spotlightPlayerIndex = 0;
   let spotlightInterval = null;
   let spotlightTransitionTimeout = null;
-  let activeRankingSeason = "all";
+  let activeRankingSeason = "current";
   let activeSquadSeason = CURRENT_SEASON;
 
   const playerForm = document.getElementById("player-form");
@@ -349,12 +349,12 @@
   function renderHome() {
     const heroNumber = document.getElementById("hero-number");
     if (!heroNumber) return;
-    const currentSquad = playerTotals()
-      .filter(player => isSquadMember(player, CURRENT_SEASON))
+    const currentSeasonMatches = data.matches.filter(match => seasonKeyForDate(match.date) === CURRENT_SEASON);
+    const currentSquad = playerTotals(currentSeasonMatches, false)
+      .filter(player => player.appearances > 0)
       .map(player => withSeasonNumber(player, CURRENT_SEASON));
     startSpotlightRotation(currentSquad);
 
-    const currentSeasonMatches = data.matches.filter(match => match.date >= "2026-09-01");
     const previousSeasonMatches = data.matches.filter(match =>
       match.date && match.date <= "2026-07-31"
     );

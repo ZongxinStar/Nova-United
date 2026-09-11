@@ -383,7 +383,7 @@ window.NOVA_DATA = {
       "assists": 0,
       "seasonRecords": {
         "2026-27": {
-          "number": 114514,
+          "number": 514,
           "status": "active"
         }
       }
