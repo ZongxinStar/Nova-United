@@ -1,6 +1,13 @@
 (function () {
   "use strict";
 
+  const CURRENT_SEASON = "2026-27";
+  const PREVIOUS_SEASON = "2025-26";
+  const SEASON_LABELS = {
+    [CURRENT_SEASON]: "2026–27 赛季",
+    [PREVIOUS_SEASON]: "2025–26 赛季"
+  };
+
   let data = normalizeData(window.NOVA_DATA || {});
   let editingPlayerIndex = -1;
   let editingMatchIndex = -1;
@@ -9,12 +16,14 @@
   let spotlightInterval = null;
   let spotlightTransitionTimeout = null;
   let activeRankingSeason = "all";
+  let activeSquadSeason = CURRENT_SEASON;
 
   const playerForm = document.getElementById("player-form");
   const matchForm = document.getElementById("match-form");
   const playerStatus = document.getElementById("manager-status");
   const matchStatus = document.getElementById("match-status");
   const rankingSeasonFilter = document.getElementById("ranking-season-filter");
+  const squadSeasonFilter = document.getElementById("squad-season-filter");
 
   function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>'"]/g, character => ({
@@ -24,6 +33,47 @@
 
   function safeInt(value) {
     return Math.max(0, Math.trunc(Number(value) || 0));
+  }
+
+  function normalizeSeasonNumber(value) {
+    if (value === "" || value == null) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.max(0, Math.trunc(number)) : null;
+  }
+
+  function normalizeSeasonRecords(player, legacyNumber) {
+    const source = player.seasonRecords && typeof player.seasonRecords === "object"
+      ? player.seasonRecords
+      : null;
+    const records = {};
+    [PREVIOUS_SEASON, CURRENT_SEASON].forEach(season => {
+      const record = source?.[season];
+      if (!record || typeof record !== "object") return;
+      const status = record.status === "departed" ? "departed" : record.status === "active" ? "active" : null;
+      if (!status) return;
+      records[season] = { number: normalizeSeasonNumber(record.number), status };
+    });
+    if (!source && !Object.keys(records).length) {
+      records[PREVIOUS_SEASON] = { number: legacyNumber, status: "active" };
+      records[CURRENT_SEASON] = { number: legacyNumber, status: "active" };
+    }
+    return records;
+  }
+
+  function seasonKeyForDate(date) {
+    return date && date >= "2026-09-01" ? CURRENT_SEASON : PREVIOUS_SEASON;
+  }
+
+  function seasonNumber(player, season) {
+    return normalizeSeasonNumber(player?.seasonRecords?.[season]?.number);
+  }
+
+  function isSquadMember(player, season) {
+    return player?.seasonRecords?.[season]?.status === "active";
+  }
+
+  function withSeasonNumber(player, season) {
+    return { ...player, number: seasonNumber(player, season) };
   }
 
   function makeId(prefix, index) {
@@ -41,11 +91,13 @@
   }
 
   function normalizePlayer(player, index) {
-    const rawNumber = player.number === "" || player.number == null ? null : Number(player.number);
+    const legacyNumber = normalizeSeasonNumber(player.number);
+    const seasonRecords = normalizeSeasonRecords(player, legacyNumber);
     const normalized = {
       id: String(player.id || makeId("player", index)),
       name: String(player.name || player["姓名"] || "").trim(),
-      number: Number.isFinite(rawNumber) ? Math.max(0, Math.trunc(rawNumber)) : null,
+      number: seasonNumber({ seasonRecords }, CURRENT_SEASON),
+      seasonRecords,
       positions: normalizePositions(player),
       photo: String(player.photo || player["照片"] || "").trim(),
       appearances: safeInt(player.appearances ?? player["出场"]),
@@ -183,14 +235,15 @@
     }).format(parsed);
   }
 
-  function playerLabel(item, playerMap) {
+  function playerLabel(item, playerMap, season = CURRENT_SEASON) {
     const player = playerMap.get(item.playerId);
     if (!player) return "未知球员";
+    const number = seasonNumber(player, season);
     const badges = [
       item.captain ? '<span class="lineup-badge" title="队长">队长</span>' : "",
       item.goalkeeper ? '<span class="lineup-badge goalkeeper" title="门将">门将</span>' : ""
     ].join("");
-    return `${escapeHTML(player.name)}${player.number == null ? "" : ` #${player.number}`}${badges}`;
+    return `${escapeHTML(player.name)}${number == null ? "" : ` #${number}`}${badges}`;
   }
 
   function playerAvatar(player) {
@@ -212,7 +265,7 @@
   function eventList(match, field, unit, playerMap) {
     const entries = match.lineup.filter(item => item[field] > 0);
     return entries.length
-      ? entries.map(item => `${playerLabel(item, playerMap)} × ${item[field]}${unit}`).join("、")
+      ? entries.map(item => `${playerLabel(item, playerMap, seasonKeyForDate(match.date))} × ${item[field]}${unit}`).join("、")
       : "暂无";
   }
 
@@ -296,7 +349,10 @@
   function renderHome() {
     const heroNumber = document.getElementById("hero-number");
     if (!heroNumber) return;
-    startSpotlightRotation(playerTotals());
+    const currentSquad = playerTotals()
+      .filter(player => isSquadMember(player, CURRENT_SEASON))
+      .map(player => withSeasonNumber(player, CURRENT_SEASON));
+    startSpotlightRotation(currentSquad);
 
     const currentSeasonMatches = data.matches.filter(match => match.date >= "2026-09-01");
     const previousSeasonMatches = data.matches.filter(match =>
@@ -341,9 +397,19 @@
     if (!container) return;
     const sortField = document.getElementById("player-sort-field")?.value || "name";
     const sortDirection = document.getElementById("player-sort-direction")?.value || "asc";
-    const players = [...playerTotals()].sort((a, b) =>
-      comparePlayersForDisplay(a, b, sortField, sortDirection)
-    );
+    const players = playerTotals()
+      .filter(player => isSquadMember(player, activeSquadSeason))
+      .map(player => withSeasonNumber(player, activeSquadSeason))
+      .sort((a, b) => comparePlayersForDisplay(a, b, sortField, sortDirection));
+    const seasonNote = document.getElementById("squad-season-note");
+    if (seasonNote) seasonNote.textContent = `当前显示：${SEASON_LABELS[activeSquadSeason]}`;
+    if (squadSeasonFilter) {
+      squadSeasonFilter.querySelectorAll("[data-squad-season]").forEach(button => {
+        const selected = button.dataset.squadSeason === activeSquadSeason;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
     container.innerHTML = players.length ? players.map((player, index) => {
       const numberLabel = player.number == null ? "号码待定" : `#${player.number}`;
       const positions = positionLabel(player);
@@ -354,7 +420,7 @@
         <div class="card-identity">${playerAvatar(player)}<div><h3>${escapeHTML(player.name)}</h3><p>NOVA UNITED · ${detailLine}</p></div></div>
         <div class="card-stats">${stat("出场", player.appearances)}${stat("进球", player.goals)}${stat("助攻", player.assists)}</div>
       </article>`;
-    }).join("") : '<p class="empty-message">暂时没有球员，请在管理数据页面添加球员。</p>';
+    }).join("") : '<p class="empty-message">该赛季暂无阵容球员。</p>';
     attachPhotoFallbacks(container);
   }
 
@@ -398,7 +464,8 @@
       const resultLabel = result === "win" ? "胜" : result === "loss" ? "负" : "平";
       const starters = match.lineup.filter(item => item.role === "starter");
       const substitutes = match.lineup.filter(item => item.role === "substitute");
-      const list = entries => entries.length ? entries.map(item => playerLabel(item, playerMap)).join("、") : "暂无";
+      const matchSeason = seasonKeyForDate(match.date);
+      const list = entries => entries.length ? entries.map(item => playerLabel(item, playerMap, matchSeason)).join("、") : "暂无";
       return `<article class="match-card" data-result="${result}">
         <div class="match-meta"><span>${escapeHTML(formatDate(match.date))}${match.time ? ` · ${escapeHTML(match.time)}` : ""}${match.matchType ? ` · ${escapeHTML(match.matchType)}` : ""}</span><span class="match-result">${resultLabel}</span></div>
         <div class="match-scoreline"><h3>Nova United <span>vs</span> ${escapeHTML(match.opponent || "对手待定")}</h3><div class="match-score">${goals} : ${match.opponentGoals}</div></div>
@@ -420,26 +487,44 @@
     const scopes = {
       all: {
         label: "全部比赛",
+        season: CURRENT_SEASON,
         matches: data.matches,
         includePlayerBase: true
       },
       current: {
-        label: "2026–27 赛季",
+        label: SEASON_LABELS[CURRENT_SEASON],
+        season: CURRENT_SEASON,
         matches: data.matches.filter(match => match.date >= "2026-09-01"),
         includePlayerBase: false
       },
       previous: {
-        label: "2025–26 赛季",
+        label: SEASON_LABELS[PREVIOUS_SEASON],
+        season: PREVIOUS_SEASON,
         matches: data.matches.filter(match => match.date && match.date <= "2026-07-31"),
         includePlayerBase: false
       }
     };
     const scope = scopes[activeRankingSeason] || scopes.all;
-    const players = playerTotals(scope.matches, scope.includePlayerBase);
+    let players = playerTotals(scope.matches, scope.includePlayerBase);
+    if (activeRankingSeason !== "all") {
+      players = players.filter(player => isSquadMember(player, scope.season) || player.appearances > 0);
+    }
+    players = players.map(player => withSeasonNumber(player, scope.season));
     const seasonNote = document.getElementById("ranking-season-note");
 
     if (seasonNote) seasonNote.textContent = `当前显示：${scope.label}`;
-    if (rankingSeasonFilter) {
+    if (squadSeasonFilter) {
+    squadSeasonFilter.addEventListener("click", event => {
+      const button = event.target.closest("[data-squad-season]");
+      if (!button || !squadSeasonFilter.contains(button)) return;
+      const nextSeason = button.dataset.squadSeason;
+      if (![CURRENT_SEASON, PREVIOUS_SEASON].includes(nextSeason)) return;
+      activeSquadSeason = nextSeason;
+      renderPlayers();
+    });
+  }
+
+  if (rankingSeasonFilter) {
       rankingSeasonFilter.querySelectorAll("[data-ranking-season]").forEach(button => {
         const selected = button.dataset.rankingSeason === activeRankingSeason;
         button.classList.toggle("active", selected);
@@ -462,22 +547,24 @@
     }).join("");
   }
 
-  function renderLineupEditor(selectedLineup = []) {
+  function renderLineupEditor(selectedLineup = [], season = CURRENT_SEASON) {
     const container = document.getElementById("lineup-editor");
     if (!container) return;
     const selected = new Map(selectedLineup.map(item => [item.playerId, item]));
-    container.innerHTML = data.players.length ? data.players.map(player => {
+    const availablePlayers = data.players.filter(player => isSquadMember(player, season) || selected.has(player.id));
+    container.innerHTML = availablePlayers.length ? availablePlayers.map(player => {
       const item = selected.get(player.id) || { role: "none", goals: 0, assists: 0, captain: false, goalkeeper: false };
       const positions = positionLabel(player);
+      const number = seasonNumber(player, season);
       return `<div class="lineup-row" data-player-id="${escapeHTML(player.id)}">
-        <div class="lineup-player"><span>${escapeHTML(player.name)}</span><small>${player.number == null ? "号码待定" : `#${player.number}`}${positions ? ` · ${escapeHTML(positions)}` : ""}</small></div>
+        <div class="lineup-player"><span>${escapeHTML(player.name)}</span><small>${number == null ? "号码待定" : `#${number}`}${positions ? ` · ${escapeHTML(positions)}` : ""}</small></div>
         <label>出场身份<select data-field="role"><option value="none"${item.role === "none" ? " selected" : ""}>未出场</option><option value="starter"${item.role === "starter" ? " selected" : ""}>首发</option><option value="substitute"${item.role === "substitute" ? " selected" : ""}>替补</option></select></label>
         <label>进球<input data-field="goals" type="number" min="0" value="${safeInt(item.goals)}"></label>
         <label>助攻<input data-field="assists" type="number" min="0" value="${safeInt(item.assists)}"></label>
         <label class="lineup-flag"><input data-field="captain" type="checkbox"${item.captain ? " checked" : ""}>队长</label>
         <label class="lineup-flag"><input data-field="goalkeeper" type="checkbox"${item.goalkeeper ? " checked" : ""}>门将</label>
       </div>`;
-    }).join("") : '<p class="empty-message">请先添加球员，再录入比赛。</p>';
+    }).join("") : '<p class="empty-message">该赛季暂无可选球员，请先在球员管理中设置赛季状态。</p>';
     updateCalculatedGoals();
   }
 
@@ -499,10 +586,20 @@
       .reduce((sum, input) => sum + safeInt(input.value), 0);
   }
 
+  function seasonRecordLabel(player, season) {
+    const record = player.seasonRecords?.[season];
+    if (!record) return "未登记";
+    const status = record.status === "active" ? "在队" : "离队";
+    return `${record.number == null ? "号码待定" : `#${record.number}`} · ${status}`;
+  }
+
   function renderManager() {
     const playerList = document.getElementById("manager-player-list");
     if (!playerList) return;
-    playerList.innerHTML = data.players.length ? data.players.map((player, index) => `<tr><td>${escapeHTML(player.name)}</td><td>${player.number ?? "—"}</td><td>${escapeHTML(positionLabel(player) || "—")}</td><td>${player.photo ? "已设置" : "—"}</td><td>${player.appearances}</td><td>${player.goals}</td><td>${player.assists}</td><td><div class="row-actions"><button type="button" data-player-edit="${index}">编辑</button><button type="button" data-player-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="8">暂无球员</td></tr>';
+    playerList.innerHTML = data.players.length ? data.players.map((player, index) => {
+      const canDepart = isSquadMember(player, CURRENT_SEASON);
+      return `<tr><td>${escapeHTML(player.name)}</td><td>${escapeHTML(seasonRecordLabel(player, PREVIOUS_SEASON))}</td><td>${escapeHTML(seasonRecordLabel(player, CURRENT_SEASON))}</td><td>${escapeHTML(positionLabel(player) || "—")}</td><td>${player.photo ? "已设置" : "—"}</td><td>${player.appearances}</td><td>${player.goals}</td><td>${player.assists}</td><td><div class="row-actions"><button type="button" data-player-edit="${index}">编辑</button>${canDepart ? `<button type="button" data-player-depart="${index}">移出本赛季</button>` : ""}<button type="button" data-player-delete="${index}">永久删除</button></div></td></tr>`;
+    }).join("") : '<tr><td colspan="9">暂无球员</td></tr>';
     const matchList = document.getElementById("manager-match-list");
     matchList.innerHTML = data.matches.length ? data.matches.map((match, index) => `<tr><td>${escapeHTML(match.date || "—")} ${escapeHTML(match.time || "")}</td><td>${escapeHTML(match.matchType || "—")}</td><td>${escapeHTML(match.opponent || "—")}</td><td>${teamGoals(match)} : ${match.opponentGoals}</td><td>${escapeHTML(match.venue || "—")}</td><td><div class="row-actions"><button type="button" data-match-edit="${index}">编辑</button><button type="button" data-match-delete="${index}">删除</button></div></td></tr>`).join("") : '<tr><td colspan="6">暂无比赛记录</td></tr>';
     if (editingMatchIndex < 0) renderLineupEditor();
@@ -524,6 +621,10 @@
     if (!playerForm) return;
     playerForm.reset();
     playerForm.querySelectorAll('input[name="positions"]').forEach(input => { input.checked = false; });
+    playerForm.elements.previousStatus.value = "not_registered";
+    playerForm.elements.previousNumber.value = "";
+    playerForm.elements.currentStatus.value = "active";
+    playerForm.elements.currentNumber.value = "";
     playerForm.elements.photo.value = "";
     playerForm.elements.appearances.value = 0;
     playerForm.elements.goals.value = 0;
@@ -555,6 +656,28 @@
     });
   }
 
+  function collectSeasonRecordsFromForm() {
+    const records = {};
+    [
+      [PREVIOUS_SEASON, playerForm.elements.previousStatus.value, playerForm.elements.previousNumber.value],
+      [CURRENT_SEASON, playerForm.elements.currentStatus.value, playerForm.elements.currentNumber.value]
+    ].forEach(([season, status, number]) => {
+      if (status === "active" || status === "departed") {
+        records[season] = { number: normalizeSeasonNumber(number), status };
+      }
+    });
+    return records;
+  }
+
+  function setSeasonFields(player) {
+    const previous = player.seasonRecords?.[PREVIOUS_SEASON];
+    const current = player.seasonRecords?.[CURRENT_SEASON];
+    playerForm.elements.previousStatus.value = previous?.status || "not_registered";
+    playerForm.elements.previousNumber.value = previous?.number ?? "";
+    playerForm.elements.currentStatus.value = current?.status || "not_registered";
+    playerForm.elements.currentNumber.value = current?.number ?? "";
+  }
+
   function parseCSV(text) {
     const clean = text.replace(/^\uFEFF/, "").trim();
     const firstLine = clean.split(/\r?\n/, 1)[0] || "";
@@ -577,12 +700,20 @@
     row.push(field.trim());
     if (row.some(cell => cell !== "")) rows.push(row);
     if (rows.length < 2) throw new Error("CSV 中没有可导入的球员数据");
-    const aliases = { "姓名": "name", "name": "name", "号码": "number", "number": "number", "位置": "positions", "position": "positions", "positions": "positions", "照片": "photo", "photo": "photo", "出场": "appearances", "appearances": "appearances", "进球": "goals", "goals": "goals", "助攻": "assists", "assists": "assists" };
+    const aliases = { "姓名": "name", "name": "name", "号码": "number", "number": "number", "2025-26号码": "previousNumber", "2025-26状态": "previousStatus", "2026-27号码": "currentNumber", "2026-27状态": "currentStatus", "位置": "positions", "position": "positions", "positions": "positions", "照片": "photo", "photo": "photo", "出场": "appearances", "appearances": "appearances", "进球": "goals", "goals": "goals", "助攻": "assists", "assists": "assists" };
     const headers = rows[0].map(item => aliases[item.trim().toLowerCase()] || aliases[item.trim()]);
     if (!headers.includes("name")) throw new Error("CSV 必须包含“姓名”或 name 列");
     return rows.slice(1).map((cells, index) => {
       const player = {};
       headers.forEach((header, column) => { if (header) player[header] = cells[column] ?? ""; });
+      const statusValue = value => value === "在队" || value === "active" ? "active" : value === "离队" || value === "departed" ? "departed" : null;
+      const previousStatus = statusValue(player.previousStatus);
+      const currentStatus = statusValue(player.currentStatus);
+      if (previousStatus || currentStatus) {
+        player.seasonRecords = {};
+        if (previousStatus) player.seasonRecords[PREVIOUS_SEASON] = { number: normalizeSeasonNumber(player.previousNumber), status: previousStatus };
+        if (currentStatus) player.seasonRecords[CURRENT_SEASON] = { number: normalizeSeasonNumber(player.currentNumber), status: currentStatus };
+      }
       return normalizePlayer(player, index);
     });
   }
@@ -625,7 +756,7 @@
         const player = normalizePlayer({
           id: editingPlayerIndex >= 0 ? data.players[editingPlayerIndex].id : undefined,
           name: playerForm.elements.name.value,
-          number: playerForm.elements.number.value,
+          seasonRecords: collectSeasonRecordsFromForm(),
           positions: selectedPlayerPositions(),
           photo: playerForm.elements.photo.value,
           appearances: playerForm.elements.appearances.value,
@@ -641,12 +772,13 @@
 
     document.getElementById("manager-player-list").addEventListener("click", event => {
       const editButton = event.target.closest("[data-player-edit]");
+      const departButton = event.target.closest("[data-player-depart]");
       const deleteButton = event.target.closest("[data-player-delete]");
       if (editButton) {
         editingPlayerIndex = Number(editButton.dataset.playerEdit);
         const player = data.players[editingPlayerIndex];
         playerForm.elements.name.value = player.name;
-        playerForm.elements.number.value = player.number ?? "";
+        setSeasonFields(player);
         setPlayerPositions(player.positions);
         playerForm.elements.photo.value = player.photo || "";
         playerForm.elements.appearances.value = player.appearances;
@@ -656,10 +788,21 @@
         document.getElementById("cancel-edit").hidden = false;
         playerForm.scrollIntoView({ behavior: "smooth", block: "center" });
       }
+      if (departButton) {
+        const index = Number(departButton.dataset.playerDepart);
+        const player = data.players[index];
+        if (confirm(`确定将 ${player.name} 移出 2026–27 赛季阵容吗？历史比赛和数据都会保留。`)) {
+          const current = player.seasonRecords?.[CURRENT_SEASON] || { number: null };
+          player.seasonRecords[CURRENT_SEASON] = { number: current.number, status: "departed" };
+          player.number = null;
+          resetPlayerForm(); resetMatchForm();
+          renderAll(`已将 ${player.name} 移出本赛季阵容，历史数据保持不变。请下载新的 data.js 保存修改。`, "player", true);
+        }
+      }
       if (deleteButton) {
         const index = Number(deleteButton.dataset.playerDelete);
         const player = data.players[index];
-        if (confirm(`确定删除 ${player.name} 吗？该球员也会从已有比赛阵容中移除。`)) {
+        if (confirm(`确定永久删除 ${player.name} 吗？该球员将从所有历史比赛阵容中移除；球员离队请使用“移出本赛季”。`)) {
           data.players.splice(index, 1);
           data.matches.forEach(match => { match.lineup = match.lineup.filter(item => item.playerId !== player.id); });
           resetPlayerForm(); resetMatchForm();
@@ -722,7 +865,7 @@
         matchForm.elements.venue.value = match.venue;
         matchForm.elements.opponent.value = match.opponent;
         matchForm.elements.opponentGoals.value = match.opponentGoals;
-        renderLineupEditor(match.lineup);
+        renderLineupEditor(match.lineup, seasonKeyForDate(match.date));
         document.getElementById("save-match").textContent = "保存比赛修改";
         document.getElementById("cancel-match-edit").hidden = false;
         matchForm.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -739,6 +882,10 @@
     });
 
     document.getElementById("cancel-match-edit").addEventListener("click", resetMatchForm);
+    matchForm.elements.date.addEventListener("change", () => {
+      const selectedLineup = collectLineup();
+      renderLineupEditor(selectedLineup, seasonKeyForDate(matchForm.elements.date.value));
+    });
     document.getElementById("data-file").addEventListener("change", async event => {
       const file = event.target.files[0];
       if (!file) return;
@@ -755,7 +902,12 @@
     });
 
     document.getElementById("download-template").addEventListener("click", () => {
-      const rows = [["姓名", "号码", "位置", "照片", "出场", "进球", "助攻"], ...data.players.map(player => [player.name, player.number ?? "", player.positions.join("、"), player.photo, player.appearances, player.goals, player.assists])];
+      const statusText = status => status === "active" ? "在队" : status === "departed" ? "离队" : "未登记";
+      const rows = [["姓名", "2025-26号码", "2025-26状态", "2026-27号码", "2026-27状态", "位置", "照片", "出场", "进球", "助攻"], ...data.players.map(player => {
+        const previous = player.seasonRecords?.[PREVIOUS_SEASON];
+        const current = player.seasonRecords?.[CURRENT_SEASON];
+        return [player.name, previous?.number ?? "", statusText(previous?.status), current?.number ?? "", statusText(current?.status), player.positions.join("、"), player.photo, player.appearances, player.goals, player.assists];
+      })];
       downloadFile("nova-united-player-template.csv", "\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\r\n"), "text/csv;charset=utf-8");
       playerStatus.textContent = "CSV 模板已下载，可以用 Excel 打开并填写历史基础数据。";
     });
