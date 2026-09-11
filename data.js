@@ -381,7 +381,7 @@ window.NOVA_DATA = {
       "id": "player-20260911-chen-sihan",
       "name": "陈思涵",
       "positions": [],
-      "photo": "",
+      "photo": "images/players/chen-sihan.webp",
       "appearances": 0,
       "goals": 0,
       "assists": 0,
