@@ -1220,7 +1220,7 @@ window.NOVA_DATA = {
       "time": "12:00",
       "matchType": "友谊赛",
       "venue": "西区操场",
-      "opponent": "花园雏鹰",
+      "opponent": "26雏鹰杯化院队伍",
       "opponentGoals": 1,
       "lineup": [
         {
@@ -1306,5 +1306,30 @@ window.NOVA_DATA = {
       ]
     }
   ],
-  "futureMatches": []
+  "futureMatches": [
+    {
+      "id": "upcoming-20260915-chongwenjiumeng",
+      "date": "2026-09-15",
+      "time": "12:30",
+      "matchType": "",
+      "venue": "西区操场",
+      "opponent": "重温旧梦",
+      "prediction": {
+        "outcome": "平局",
+        "teamGoals": 3,
+        "opponentGoals": 3,
+        "scorers": [
+          {
+            "name": "尹宗鑫",
+            "goals": 2
+          },
+          {
+            "name": "丁想",
+            "goals": 1
+          }
+        ],
+        "basis": "重温旧梦此前以5:2取胜，但 Nova United 最近一场5:1获胜，进攻状态明显回升"
+      }
+    }
+  ]
 };
