@@ -29,7 +29,10 @@
       <p class="save-notice">管理页中的修改会立即用于本页预览，但浏览器不能直接覆盖网站文件。全部修改完成后，请下载新的 <b>data.js</b>，并替换网站文件夹中的旧版本。</p>
       <form class="player-form" id="player-form">
         <div class="form-field form-name"><label for="player-name">姓名</label><input id="player-name" name="name" required placeholder="例如：张三"></div>
-        <div class="form-field"><label for="player-number">号码</label><input id="player-number" name="number" type="number" min="0" placeholder="可不填"></div>
+        <div class="form-field"><label for="previous-status">2025–26 状态</label><select id="previous-status" name="previousStatus"><option value="not_registered">未登记</option><option value="active">在队</option><option value="departed">离队</option></select></div>
+        <div class="form-field"><label for="previous-number">2025–26 号码</label><input id="previous-number" name="previousNumber" type="number" min="0" placeholder="可不填"></div>
+        <div class="form-field"><label for="current-status">2026–27 状态</label><select id="current-status" name="currentStatus"><option value="active" selected>在队</option><option value="departed">离队</option><option value="not_registered">未登记</option></select></div>
+        <div class="form-field"><label for="current-number">2026–27 号码</label><input id="current-number" name="currentNumber" type="number" min="0" placeholder="可不填"></div>
         <fieldset class="form-field form-positions">
           <legend>场上位置（可多选）</legend>
           <div class="position-options" id="player-positions">
@@ -53,7 +56,7 @@
         <div class="form-field"><label for="player-assists">历史助攻</label><input id="player-assists" name="assists" type="number" min="0" value="0" required></div>
         <div class="form-actions form-submit"><button class="button button-primary" id="save-player" type="submit">添加球员</button><button class="button" id="cancel-edit" type="button" hidden>取消编辑</button></div>
       </form>
-      <div class="table-wrap"><table class="manager-table"><thead><tr><th>姓名</th><th>号码</th><th>位置</th><th>照片</th><th>历史出场</th><th>历史进球</th><th>历史助攻</th><th>操作</th></tr></thead><tbody id="manager-player-list"></tbody></table></div>
+      <div class="table-wrap"><table class="manager-table"><thead><tr><th>姓名</th><th>2025–26</th><th>2026–27</th><th>位置</th><th>照片</th><th>历史出场</th><th>历史进球</th><th>历史助攻</th><th>操作</th></tr></thead><tbody id="manager-player-list"></tbody></table></div>
       <p class="manager-status" id="manager-status" role="status" aria-live="polite">数据已从 data.js 载入。</p>
     </section>
     <section class="section manage-section match-manager-section">
@@ -76,6 +79,6 @@
     </section>
   </main>
   <footer><div class="footer-brand">NOVA UNITED</div><p>球队官网 · 数据持续更新</p></footer>
-  <script src="data.js"></script><script src="app.js"></script>
+  <script src="data.js?v=20260911-season-roster"></script><script src="app.js?v=20260911-season-roster"></script>
 </body>
 </html>
