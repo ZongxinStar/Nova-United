@@ -132,7 +132,7 @@ window.NOVA_DATA = {
         "右前卫",
         "前腰"
       ],
-      "photo": "",
+      "photo": "images/players/li-xingyi.webp",
       "appearances": 0,
       "goals": 0,
       "assists": 0,
