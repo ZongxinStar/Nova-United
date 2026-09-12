@@ -400,7 +400,7 @@ window.NOVA_DATA = {
       "id": "player-20260911-hu-lin",
       "name": "胡霖",
       "positions": [],
-      "photo": "",
+      "photo": "images/players/hu-lin.jpg",
       "appearances": 0,
       "goals": 0,
       "assists": 0,
