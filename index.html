@@ -96,6 +96,12 @@
       </div>
       <aside class="spotlight" aria-label="焦点球员">
         <div class="spotlight-label">PLAYER 01</div>
+        <button class="spotlight-nav spotlight-prev" id="spotlight-prev" type="button" aria-label="上一位球员">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7"/></svg>
+        </button>
+        <button class="spotlight-nav spotlight-next" id="spotlight-next" type="button" aria-label="下一位球员">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg>
+        </button>
         <div class="spotlight-main">
           <div class="spotlight-identity">
             <div class="player-number" id="hero-number">—</div>
@@ -104,8 +110,6 @@
           <div class="spotlight-photo" id="hero-photo-wrap">
             <img id="hero-photo" alt="" hidden>
             <span id="hero-photo-placeholder" aria-hidden="true">NU</span>
-            <button class="spotlight-nav spotlight-prev" id="spotlight-prev" type="button" aria-label="上一位球员">‹</button>
-            <button class="spotlight-nav spotlight-next" id="spotlight-next" type="button" aria-label="下一位球员">›</button>
           </div>
         </div>
         <div class="spotlight-stats" id="hero-stats"></div>
