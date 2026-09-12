@@ -415,7 +415,7 @@ window.NOVA_DATA = {
       "id": "player-20260911-yang-tianhao",
       "name": "杨天浩",
       "positions": [],
-      "photo": "",
+      "photo": "images/players/yang-tianhao.webp",
       "appearances": 0,
       "goals": 0,
       "assists": 0,
