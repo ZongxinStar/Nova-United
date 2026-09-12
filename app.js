@@ -337,8 +337,39 @@
     }
   }
 
+  function changeSpotlightPlayer(players, direction) {
+    const spotlight = document.querySelector(".spotlight");
+    if (!spotlight || !players.length) return;
+
+    window.clearTimeout(spotlightTransitionTimeout);
+    spotlight.classList.remove("is-changing");
+    spotlightPlayerIndex = (spotlightPlayerIndex + direction + players.length) % players.length;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      renderSpotlightPlayer(players, spotlightPlayerIndex);
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      spotlight.classList.add("is-changing");
+      spotlightTransitionTimeout = window.setTimeout(() => {
+        renderSpotlightPlayer(players, spotlightPlayerIndex);
+        window.requestAnimationFrame(() => spotlight.classList.remove("is-changing"));
+      }, 320);
+    });
+  }
+
+  function scheduleSpotlightRotation(players) {
+    window.clearInterval(spotlightInterval);
+    if (players.length < 2) return;
+    spotlightInterval = window.setInterval(() => changeSpotlightPlayer(players, 1), 5000);
+  }
+
   function startSpotlightRotation(players) {
     const spotlight = document.querySelector(".spotlight");
+    const previousButton = document.getElementById("spotlight-prev");
+    const nextButton = document.getElementById("spotlight-next");
     if (!spotlight) return;
 
     window.clearInterval(spotlightInterval);
@@ -346,23 +377,25 @@
     spotlightPlayerIndex = players.length ? spotlightPlayerIndex % players.length : 0;
     renderSpotlightPlayer(players, spotlightPlayerIndex);
 
-    if (players.length < 2) return;
+    const controlsHidden = players.length < 2;
+    if (previousButton) previousButton.hidden = controlsHidden;
+    if (nextButton) nextButton.hidden = controlsHidden;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    spotlightInterval = window.setInterval(() => {
-      spotlightPlayerIndex = (spotlightPlayerIndex + 1) % players.length;
+    if (previousButton) {
+      previousButton.onclick = () => {
+        changeSpotlightPlayer(players, -1);
+        scheduleSpotlightRotation(players);
+      };
+    }
 
-      if (reducedMotion) {
-        renderSpotlightPlayer(players, spotlightPlayerIndex);
-        return;
-      }
+    if (nextButton) {
+      nextButton.onclick = () => {
+        changeSpotlightPlayer(players, 1);
+        scheduleSpotlightRotation(players);
+      };
+    }
 
-      spotlight.classList.add("is-changing");
-      spotlightTransitionTimeout = window.setTimeout(() => {
-        renderSpotlightPlayer(players, spotlightPlayerIndex);
-        window.requestAnimationFrame(() => spotlight.classList.remove("is-changing"));
-      }, 320);
-    }, 5000);
+    scheduleSpotlightRotation(players);
   }
 
   function renderHome() {
