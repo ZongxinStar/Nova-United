@@ -107,7 +107,7 @@ window.NOVA_DATA = {
         "中前卫",
         "前腰"
       ],
-      "photo": "",
+      "photo": "images/players/tan-liwen.jpg",
       "appearances": 0,
       "goals": 0,
       "assists": 0,
