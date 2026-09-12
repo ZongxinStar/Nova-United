@@ -252,11 +252,11 @@
       }
 
       .spotlight-prev {
-        left: 0.8rem;
+        left: 0.15rem;
       }
 
       .spotlight-next {
-        right: 0.8rem;
+        right: 0.15rem;
       }
       
       .spotlight-top,
@@ -1624,11 +1624,11 @@
         }
 
         .spotlight-prev {
-          left: 0.4rem;
+          left: 0.1rem;
         }
 
         .spotlight-next {
-          right: 0.4rem;
+          right: 0.1rem;
         }
       
         .spotlight-main {
