@@ -200,6 +200,54 @@
         top: 70px;
         width: 330px;
       }
+
+      .spotlight-nav {
+        align-items: center;
+        background: rgba(10, 17, 16, 0.92);
+        border: 1px solid rgba(200, 255, 57, 0.5);
+        border-radius: 50%;
+        color: var(--lime);
+        cursor: pointer;
+        display: flex;
+        font: inherit;
+        font-size: 2rem;
+        font-weight: 700;
+        height: 44px;
+        justify-content: center;
+        line-height: 1;
+        padding: 0 0 0.16rem;
+        position: absolute;
+        top: 48%;
+        transform: translateY(-50%);
+        transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+        width: 44px;
+        z-index: 5;
+      }
+
+      .spotlight-nav:hover,
+      .spotlight-nav:focus-visible {
+        background: var(--ink);
+        color: #fff;
+        outline: 2px solid var(--ink);
+        outline-offset: 3px;
+        transform: translateY(-50%) scale(1.08);
+      }
+
+      .spotlight-nav:active {
+        transform: translateY(-50%) scale(0.96);
+      }
+
+      .spotlight-nav[hidden] {
+        display: none;
+      }
+
+      .spotlight-prev {
+        left: 0.6rem;
+      }
+
+      .spotlight-next {
+        right: 0.6rem;
+      }
       
       .spotlight-top,
       .spotlight-label {
@@ -1553,6 +1601,21 @@
         .spotlight {
           min-height: 390px;
           padding: 1.3rem;
+        }
+
+        .spotlight-nav {
+          font-size: 1.65rem;
+          height: 38px;
+          top: 46%;
+          width: 38px;
+        }
+
+        .spotlight-prev {
+          left: 0.3rem;
+        }
+
+        .spotlight-next {
+          right: 0.3rem;
         }
       
         .spotlight-main {
