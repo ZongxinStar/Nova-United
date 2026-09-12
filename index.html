@@ -50,8 +50,29 @@
       font-weight: 900;
     }
     @media (max-width: 600px) {
-      .site-live-stats { max-width: none; }
-      .site-live-stat { padding: 0.9rem; }
+      .site-live-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: none;
+      }
+      .site-live-stat {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 0.38rem;
+        justify-content: center;
+        min-height: 96px;
+        padding: 0.8rem 0.35rem;
+        text-align: center;
+      }
+      .site-live-stat strong {
+        font-size: 1.4rem;
+      }
+      .site-live-stat > span:last-child {
+        font-size: 0.62rem;
+        line-height: 1.25;
+        white-space: normal;
+      }
     }
   </style>
 </head>
