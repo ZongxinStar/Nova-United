@@ -55,7 +55,7 @@ window.NOVA_DATA = {
           "status": "active"
         },
         "2026-27": {
-          "number": 91,
+          "number": 47,
           "status": "active"
         }
       }
@@ -142,7 +142,7 @@ window.NOVA_DATA = {
           "status": "active"
         },
         "2026-27": {
-          "number": 14,
+          "number": 41,
           "status": "active"
         }
       }
@@ -406,7 +406,7 @@ window.NOVA_DATA = {
       "assists": 0,
       "seasonRecords": {
         "2026-27": {
-          "number": 888,
+          "number": 6,
           "status": "active"
         }
       }
@@ -421,7 +421,7 @@ window.NOVA_DATA = {
       "assists": 0,
       "seasonRecords": {
         "2026-27": {
-          "number": 666,
+          "number": 11,
           "status": "active"
         }
       }
