@@ -376,7 +376,7 @@ window.NOVA_DATA = {
           "status": "active"
         },
         "2026-27": {
-          "number": 114,
+          "number": 0,
           "status": "active"
         }
       }
@@ -391,7 +391,7 @@ window.NOVA_DATA = {
       "assists": 0,
       "seasonRecords": {
         "2026-27": {
-          "number": 514,
+          "number": 8,
           "status": "active"
         }
       }
