@@ -13,8 +13,11 @@
   let editingMatchIndex = -1;
   let hasUnsavedExport = false;
   let spotlightPlayerIndex = 0;
-  let spotlightInterval = null;
+  let spotlightRotationTimeout = null;
   let spotlightTransitionTimeout = null;
+  let spotlightChangeToken = 0;
+  const spotlightPhotoChoices = new Map();
+  const spotlightPhotoLoads = new Map();
   let activeRankingSeason = "current";
   let activeSquadSeason = CURRENT_SEASON;
 
@@ -263,11 +266,66 @@
     return `<div class="player-avatar has-photo"><img src="${escapeHTML(player.photo)}" alt="${escapeHTML(player.name)}的照片" data-photo-fallback="${initial}"></div>`;
   }
 
-  function randomPlayerPhoto(player) {
+  function selectedSpotlightPhoto(player) {
     const photos = Array.isArray(player?.photos) && player.photos.length
       ? player.photos
       : player?.photo ? [player.photo] : [];
-    return photos[Math.floor(Math.random() * photos.length)] || "";
+    if (!photos.length) return "";
+
+    const playerKey = `${player.id || player.name}:${photos.join("|")}`;
+    if (!spotlightPhotoChoices.has(playerKey)) {
+      spotlightPhotoChoices.set(
+        playerKey,
+        photos[Math.floor(Math.random() * photos.length)] || ""
+      );
+    }
+    return spotlightPhotoChoices.get(playerKey);
+  }
+
+  function loadSpotlightPhoto(source) {
+    if (!source) return Promise.resolve(false);
+    if (spotlightPhotoLoads.has(source)) return spotlightPhotoLoads.get(source);
+
+    const loadPromise = new Promise(resolve => {
+      const image = new Image();
+      let settled = false;
+      const settle = ready => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timeout);
+        image.onload = null;
+        image.onerror = null;
+        resolve(ready);
+      };
+      const timeout = window.setTimeout(() => settle(false), 5000);
+
+      image.decoding = "async";
+      image.onload = () => {
+        const decode = typeof image.decode === "function"
+          ? image.decode().catch(() => {})
+          : Promise.resolve();
+        decode.then(() => settle(true));
+      };
+      image.onerror = () => settle(false);
+      image.src = source;
+
+      if (image.complete && image.naturalWidth > 0) image.onload();
+    });
+
+    spotlightPhotoLoads.set(source, loadPromise);
+    loadPromise.then(ready => {
+      if (!ready && spotlightPhotoLoads.get(source) === loadPromise) {
+        spotlightPhotoLoads.delete(source);
+      }
+    });
+    return loadPromise;
+  }
+
+  function warmNextSpotlightPhoto(players, index) {
+    if (players.length < 2) return;
+    const nextPlayer = players[(index + 1) % players.length];
+    const nextPhoto = selectedSpotlightPhoto(nextPlayer);
+    if (nextPhoto) void loadSpotlightPhoto(nextPhoto);
   }
 
   function attachPhotoFallbacks(container) {
@@ -297,9 +355,8 @@
     return b[board.field] - a[board.field] || a.name.localeCompare(b.name, "zh-CN");
   }
 
-  function renderSpotlightPlayer(players, index) {
+  function renderSpotlightPlayer(players, index, spotlightPhoto = "") {
     const player = players[index];
-    const spotlightPhoto = randomPlayerPhoto(player);
     const playerLabel = document.querySelector(".spotlight-label");
     const heroPhoto = document.getElementById("hero-photo");
     const photoPlaceholder = document.getElementById("hero-photo-placeholder");
@@ -313,18 +370,23 @@
       photoPlaceholder.textContent = player?.name ? player.name.slice(0, 2) : "NU";
       const showPhotoPlaceholder = () => {
         heroPhoto.hidden = true;
+        heroPhoto.removeAttribute("src");
         photoPlaceholder.hidden = false;
       };
 
-      if (spotlightPhoto) {
+      heroPhoto.onerror = null;
+      heroPhoto.hidden = true;
+      heroPhoto.removeAttribute("src");
+      photoPlaceholder.hidden = false;
+
+      if (spotlightPhoto && player) {
         heroPhoto.onerror = showPhotoPlaceholder;
         heroPhoto.alt = `${player.name}的球员照片`;
+        heroPhoto.decoding = "async";
+        heroPhoto.src = spotlightPhoto;
         heroPhoto.hidden = false;
         photoPlaceholder.hidden = true;
-        heroPhoto.src = spotlightPhoto;
       } else {
-        heroPhoto.onerror = null;
-        heroPhoto.removeAttribute("src");
         heroPhoto.alt = "";
         showPhotoPlaceholder();
       }
@@ -337,33 +399,59 @@
     }
   }
 
-  function changeSpotlightPlayer(players, direction) {
+  async function changeSpotlightPlayer(players, direction) {
     const spotlight = document.querySelector(".spotlight");
-    if (!spotlight || !players.length) return;
+    if (!spotlight || !players.length) return false;
 
+    const changeToken = ++spotlightChangeToken;
     window.clearTimeout(spotlightTransitionTimeout);
-    spotlight.classList.remove("is-changing");
     spotlightPlayerIndex = (spotlightPlayerIndex + direction + players.length) % players.length;
+
+    const targetIndex = spotlightPlayerIndex;
+    const targetPlayer = players[targetIndex];
+    const targetPhoto = selectedSpotlightPhoto(targetPlayer);
+    const photoReady = targetPhoto ? await loadSpotlightPhoto(targetPhoto) : false;
+    if (changeToken !== spotlightChangeToken) return false;
+
+    const commitPlayer = () => {
+      renderSpotlightPlayer(players, targetIndex, photoReady ? targetPhoto : "");
+      warmNextSpotlightPhoto(players, targetIndex);
+    };
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) {
-      renderSpotlightPlayer(players, spotlightPlayerIndex);
-      return;
+      spotlight.classList.remove("is-changing");
+      commitPlayer();
+      return true;
     }
 
-    window.requestAnimationFrame(() => {
-      spotlight.classList.add("is-changing");
-      spotlightTransitionTimeout = window.setTimeout(() => {
-        renderSpotlightPlayer(players, spotlightPlayerIndex);
-        window.requestAnimationFrame(() => spotlight.classList.remove("is-changing"));
-      }, 320);
+    spotlight.classList.remove("is-changing");
+    void spotlight.offsetWidth;
+    spotlight.classList.add("is-changing");
+
+    await new Promise(resolve => {
+      spotlightTransitionTimeout = window.setTimeout(resolve, 320);
     });
+    if (changeToken !== spotlightChangeToken) return false;
+
+    commitPlayer();
+    window.requestAnimationFrame(() => {
+      if (changeToken === spotlightChangeToken) {
+        spotlight.classList.remove("is-changing");
+      }
+    });
+    return true;
   }
 
   function scheduleSpotlightRotation(players) {
-    window.clearInterval(spotlightInterval);
+    window.clearTimeout(spotlightRotationTimeout);
     if (players.length < 2) return;
-    spotlightInterval = window.setInterval(() => changeSpotlightPlayer(players, 1), 5000);
+
+    spotlightRotationTimeout = window.setTimeout(() => {
+      void changeSpotlightPlayer(players, 1).then(changed => {
+        if (changed) scheduleSpotlightRotation(players);
+      });
+    }, 5000);
   }
 
   function startSpotlightRotation(players) {
@@ -372,8 +460,10 @@
     const nextButton = document.getElementById("spotlight-next");
     if (!spotlight) return;
 
-    window.clearInterval(spotlightInterval);
+    window.clearTimeout(spotlightRotationTimeout);
     window.clearTimeout(spotlightTransitionTimeout);
+    spotlightChangeToken += 1;
+    spotlight.classList.remove("is-changing");
     spotlightPlayerIndex = players.length ? spotlightPlayerIndex % players.length : 0;
     renderSpotlightPlayer(players, spotlightPlayerIndex);
 
@@ -381,21 +471,30 @@
     if (previousButton) previousButton.hidden = controlsHidden;
     if (nextButton) nextButton.hidden = controlsHidden;
 
-    if (previousButton) {
-      previousButton.onclick = () => {
-        changeSpotlightPlayer(players, -1);
-        scheduleSpotlightRotation(players);
-      };
-    }
+    const moveSpotlight = direction => {
+      window.clearTimeout(spotlightRotationTimeout);
+      void changeSpotlightPlayer(players, direction).then(changed => {
+        if (changed) scheduleSpotlightRotation(players);
+      });
+    };
 
-    if (nextButton) {
-      nextButton.onclick = () => {
-        changeSpotlightPlayer(players, 1);
-        scheduleSpotlightRotation(players);
-      };
-    }
+    if (previousButton) previousButton.onclick = () => moveSpotlight(-1);
+    if (nextButton) nextButton.onclick = () => moveSpotlight(1);
 
-    scheduleSpotlightRotation(players);
+    if (!players.length) return;
+
+    const initialToken = ++spotlightChangeToken;
+    const initialPhoto = selectedSpotlightPhoto(players[spotlightPlayerIndex]);
+    void loadSpotlightPhoto(initialPhoto).then(photoReady => {
+      if (initialToken !== spotlightChangeToken) return;
+      renderSpotlightPlayer(
+        players,
+        spotlightPlayerIndex,
+        photoReady ? initialPhoto : ""
+      );
+      warmNextSpotlightPhoto(players, spotlightPlayerIndex);
+      scheduleSpotlightRotation(players);
+    });
   }
 
   function renderHome() {
