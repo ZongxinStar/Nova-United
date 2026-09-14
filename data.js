@@ -74,6 +74,10 @@ window.NOVA_DATA = {
         "2025-26": {
           "number": 14,
           "status": "active"
+        },
+        "2026-27": {
+          "number": 17,
+          "status": "active"
         }
       }
     },
@@ -285,6 +289,10 @@ window.NOVA_DATA = {
       "seasonRecords": {
         "2025-26": {
           "number": 3,
+          "status": "active"
+        },
+        "2026-27": {
+          "number": 24,
           "status": "active"
         }
       }
