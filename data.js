@@ -1467,5 +1467,30 @@ window.NOVA_DATA = {
       ]
     }
   ],
-  "futureMatches": []
+  "futureMatches": [
+    {
+      "id": "upcoming-20260921-oldream",
+      "date": "2026-09-21",
+      "time": "12:30",
+      "matchType": "友谊赛",
+      "venue": "西区操场",
+      "opponent": "Oldream",
+      "prediction": {
+        "outcome": "Nova United 小胜",
+        "teamGoals": 3,
+        "opponentGoals": 2,
+        "scorers": [
+          {
+            "name": "尹宗鑫",
+            "goals": 2
+          },
+          {
+            "name": "杨天浩",
+            "goals": 1
+          }
+        ],
+        "basis": "结合本赛季首战状态与双方过往交锋，李嘉创、丁想缺席后进攻端有所减员，预计比赛胶着"
+      }
+    }
+  ]
 };
