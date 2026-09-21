@@ -148,6 +148,14 @@
       venue: String(match.venue || "").trim(),
       opponent: String(match.opponent || "").trim(),
       opponentGoals: safeInt(match.opponentGoals),
+      teamGoals: match.teamGoals == null ? null : safeInt(match.teamGoals),
+      guestScorers: Array.isArray(match.guestScorers)
+        ? match.guestScorers.map(item => ({
+          name: String(item?.name || "").trim(),
+          goals: safeInt(item?.goals),
+          note: String(item?.note || "").trim()
+        })).filter(item => item.name && item.goals > 0)
+        : [],
       lineup: normalizedLineup
     };
   }
@@ -195,6 +203,7 @@
   }
 
   function teamGoals(match) {
+    if (match.teamGoals != null) return safeInt(match.teamGoals);
     return match.lineup.reduce((sum, item) => sum + safeInt(item.goals), 0);
   }
 
@@ -339,10 +348,15 @@
   }
 
   function eventList(match, field, unit, playerMap) {
-    const entries = match.lineup.filter(item => item[field] > 0);
-    return entries.length
-      ? entries.map(item => `${playerLabel(item, playerMap, seasonKeyForDate(match.date))} × ${item[field]}${unit}`).join("、")
-      : "暂无";
+    const entries = match.lineup
+      .filter(item => item[field] > 0)
+      .map(item => `${playerLabel(item, playerMap, seasonKeyForDate(match.date))} × ${item[field]}${unit}`);
+    if (field === "goals" && Array.isArray(match.guestScorers)) {
+      match.guestScorers.forEach(item => {
+        entries.push(`${escapeHTML(item.name)}${item.note ? `（${escapeHTML(item.note)}）` : ""} × ${item.goals}${unit}`);
+      });
+    }
+    return entries.length ? entries.join("、") : "暂无";
   }
 
   function compareRankingPlayers(board, a, b) {
