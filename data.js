@@ -433,6 +433,23 @@ window.NOVA_DATA = {
           "status": "active"
         }
       }
+    },
+    {
+      "id": "player-20260921-zhang-ziyang",
+      "name": "张子扬",
+      "positions": [
+        "中后卫"
+      ],
+      "photo": "",
+      "appearances": 0,
+      "goals": 0,
+      "assists": 0,
+      "seasonRecords": {
+        "2026-27": {
+          "number": 20,
+          "status": "active"
+        }
+      }
     }
   ],
   "matches": [
@@ -1465,32 +1482,90 @@ window.NOVA_DATA = {
           "goalkeeper": false
         }
       ]
-    }
-  ],
-  "futureMatches": [
+    },
     {
-      "id": "upcoming-20260921-oldream",
+      "id": "match-20260921-oldream-friendly",
       "date": "2026-09-21",
       "time": "12:30",
       "matchType": "友谊赛",
       "venue": "西区操场",
       "opponent": "Oldream",
-      "prediction": {
-        "outcome": "Nova United 小胜",
-        "teamGoals": 3,
-        "opponentGoals": 2,
-        "scorers": [
-          {
-            "name": "尹宗鑫",
-            "goals": 2
-          },
-          {
-            "name": "杨天浩",
-            "goals": 1
-          }
-        ],
-        "basis": "结合本赛季首战状态与双方过往交锋，李嘉创、丁想缺席后进攻端有所减员，预计比赛胶着"
-      }
+      "opponentGoals": 3,
+      "teamGoals": 9,
+      "guestScorers": [
+        {
+          "name": "冯俊逸",
+          "goals": 1,
+          "note": "友情客串"
+        }
+      ],
+      "lineup": [
+        {
+          "playerId": "player-1788449659701-2",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "wu-qianhe",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-hu-lin",
+          "role": "starter",
+          "goals": 1,
+          "assists": 2,
+          "captain": true,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-yang-tianhao",
+          "role": "starter",
+          "goals": 1,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "yin-zongxin",
+          "role": "starter",
+          "goals": 2,
+          "assists": 1,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480314719-11-th2iv",
+          "role": "starter",
+          "goals": 2,
+          "assists": 3,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260921-zhang-ziyang",
+          "role": "starter",
+          "goals": 0,
+          "assists": 1,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788503209270-17-da5b0",
+          "role": "starter",
+          "goals": 2,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
     }
-  ]
+  ],
+  "futureMatches": []
 };
