@@ -1536,7 +1536,7 @@ window.NOVA_DATA = {
           "playerId": "yin-zongxin",
           "role": "starter",
           "goals": 2,
-          "assists": 1,
+          "assists": 2,
           "captain": false,
           "goalkeeper": false
         },
