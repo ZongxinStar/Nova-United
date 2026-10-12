@@ -1567,5 +1567,14 @@ window.NOVA_DATA = {
       ]
     }
   ],
-  "futureMatches": []
+  "futureMatches": [
+    {
+      "id": "upcoming-20261014-guanshu-friendly",
+      "date": "2026-10-14",
+      "time": "16:00（暂定）",
+      "matchType": "友谊赛",
+      "venue": "西区操场",
+      "opponent": "26管数雏鹰杯队伍"
+    }
+  ]
 };
