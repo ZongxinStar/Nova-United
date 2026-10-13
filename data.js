@@ -1575,6 +1575,30 @@ window.NOVA_DATA = {
       "matchType": "友谊赛",
       "venue": "西区操场",
       "opponent": "26管数雏鹰杯队伍"
+    },
+    {
+      "id": "upcoming-20261020-mygoal-friendly",
+      "date": "2026-10-20",
+      "time": "12:20（暂定）",
+      "matchType": "友谊赛",
+      "venue": "西区操场",
+      "opponent": "mygoal",
+      "prediction": {
+        "outcome": "平局",
+        "teamGoals": 3,
+        "opponentGoals": 3,
+        "scorers": [
+          {
+            "name": "尹宗鑫",
+            "goals": 2
+          },
+          {
+            "name": "丁想",
+            "goals": 1
+          }
+        ],
+        "basis": "上次对阵mygoal的记录为0:7，历史交锋处于劣势；但Nova本赛季已录入的两场友谊赛分别以5:1、9:3获胜，进攻状态有所提升。综合预测本场3:3，尹宗鑫两球、丁想一球。双方本场阵容尚未确认，预测仅依据现有记录。"
+      }
     }
   ]
 };
