@@ -178,7 +178,7 @@ window.NOVA_DATA = {
         "中后卫",
         "右后卫"
       ],
-      "photo": "",
+      "photo": "images/players/yu-linfeng.webp",
       "appearances": 0,
       "goals": 0,
       "assists": 0,
