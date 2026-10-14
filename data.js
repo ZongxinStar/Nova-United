@@ -1565,17 +1565,101 @@ window.NOVA_DATA = {
           "goalkeeper": false
         }
       ]
+    },
+    {
+      "id": "match-20261014-guanshu-friendly",
+      "date": "2026-10-14",
+      "time": "16:00",
+      "matchType": "友谊赛",
+      "venue": "西区操场",
+      "opponent": "26管数雏鹰杯队伍",
+      "opponentGoals": 2,
+      "notes": "赵思博任意球直接破门。",
+      "lineup": [
+        {
+          "playerId": "yin-zongxin",
+          "role": "starter",
+          "goals": 2,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "wu-qianhe",
+          "role": "starter",
+          "goals": 0,
+          "assists": 1,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480644818-12-8ia7q",
+          "role": "starter",
+          "goals": 1,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480089268-5-txjpc",
+          "role": "starter",
+          "goals": 1,
+          "assists": 1,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788480075275-4-4nenu",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-yang-tianhao",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260921-zhang-ziyang",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": true
+        },
+        {
+          "playerId": "player-1788480122966-7-ek8iy",
+          "role": "starter",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-20260911-hu-lin",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        },
+        {
+          "playerId": "player-1788449743936-3",
+          "role": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "captain": false,
+          "goalkeeper": false
+        }
+      ]
     }
   ],
   "futureMatches": [
-    {
-      "id": "upcoming-20261014-guanshu-friendly",
-      "date": "2026-10-14",
-      "time": "16:00（暂定）",
-      "matchType": "友谊赛",
-      "venue": "西区操场",
-      "opponent": "26管数雏鹰杯队伍"
-    },
     {
       "id": "upcoming-20261020-mygoal-friendly",
       "date": "2026-10-20",

@@ -148,6 +148,7 @@
       venue: String(match.venue || "").trim(),
       opponent: String(match.opponent || "").trim(),
       opponentGoals: safeInt(match.opponentGoals),
+      notes: String(match.notes || "").trim(),
       teamGoals: match.teamGoals == null ? null : safeInt(match.teamGoals),
       guestScorers: Array.isArray(match.guestScorers)
         ? match.guestScorers.map(item => ({
@@ -640,6 +641,7 @@
           <div class="match-detail-row"><b>替补球员</b><span>${list(substitutes)}</span></div>
           <div class="match-detail-row"><b>进球</b><span>${eventList(match, "goals", "球", playerMap)}</span></div>
           <div class="match-detail-row"><b>助攻</b><span>${eventList(match, "assists", "次", playerMap)}</span></div>
+          ${match.notes ? `<div class="match-detail-row"><b>比赛备注</b><span>${escapeHTML(match.notes)}</span></div>` : ""}
         </div>
       </article>`;
     }).join("") : '<p class="empty-message">暂时没有比赛记录，请在管理数据页面添加第一场比赛。</p>';
@@ -997,6 +999,7 @@
           venue: matchForm.elements.venue.value,
           opponent: matchForm.elements.opponent.value,
           opponentGoals: matchForm.elements.opponentGoals.value,
+          notes: editingMatchIndex >= 0 ? data.matches[editingMatchIndex].notes : "",
           lineup
         }, editingMatchIndex >= 0 ? editingMatchIndex : data.matches.length, new Set(data.players.map(player => player.id)));
         if (!match.date) throw new Error("请填写比赛日期");
