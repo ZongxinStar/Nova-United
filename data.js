@@ -188,7 +188,7 @@ window.NOVA_DATA = {
           "status": "active"
         },
         "2026-27": {
-          "number": 4,
+          "number": 66,
           "status": "active"
         }
       }
