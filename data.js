@@ -1662,8 +1662,8 @@ window.NOVA_DATA = {
   "futureMatches": [
     {
       "id": "upcoming-20261020-mygoal-friendly",
-      "date": "2026-10-20",
-      "time": "12:20（暂定）",
+      "date": "2026-10-21",
+      "time": "16:00",
       "matchType": "友谊赛",
       "venue": "西区操场",
       "opponent": "mygoal",
