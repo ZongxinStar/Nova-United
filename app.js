@@ -563,12 +563,25 @@
     if (!container) return;
     const sortField = document.getElementById("player-sort-field")?.value || "name";
     const sortDirection = document.getElementById("player-sort-direction")?.value || "asc";
-    const players = playerTotals()
-      .filter(player => isSquadMember(player, activeSquadSeason))
-      .map(player => withSeasonNumber(player, activeSquadSeason))
+    const isTotal = activeSquadSeason === "all";
+    const matches = isTotal ? data.matches : data.matches.filter(match =>
+      activeSquadSeason === CURRENT_SEASON
+        ? match.date >= "2026-09-01"
+        : match.date && match.date <= "2026-07-31"
+    );
+    const players = playerTotals(matches, isTotal)
+      .filter(player => isTotal || isSquadMember(player, activeSquadSeason) || player.appearances > 0)
+      .map(player => {
+        const numberSeason = isTotal
+          ? (player.seasonRecords[CURRENT_SEASON] ? CURRENT_SEASON : PREVIOUS_SEASON)
+          : activeSquadSeason;
+        return withSeasonNumber(player, numberSeason);
+      })
       .sort((a, b) => comparePlayersForDisplay(a, b, sortField, sortDirection));
     const seasonNote = document.getElementById("squad-season-note");
-    if (seasonNote) seasonNote.textContent = `当前显示：${SEASON_LABELS[activeSquadSeason]}`;
+    if (seasonNote) seasonNote.textContent = isTotal
+      ? "当前显示：总榜 · 全部赛季累计数据"
+      : `当前显示：${SEASON_LABELS[activeSquadSeason]} · 仅统计该赛季出场、进球与助攻`;
     if (squadSeasonFilter) {
       squadSeasonFilter.querySelectorAll("[data-squad-season]").forEach(button => {
         const selected = button.dataset.squadSeason === activeSquadSeason;
@@ -1162,7 +1175,7 @@
       const button = event.target.closest("[data-squad-season]");
       if (!button || !squadSeasonFilter.contains(button)) return;
       const nextSeason = button.dataset.squadSeason;
-      if (![CURRENT_SEASON, PREVIOUS_SEASON].includes(nextSeason)) return;
+      if (!["all", CURRENT_SEASON, PREVIOUS_SEASON].includes(nextSeason)) return;
       activeSquadSeason = nextSeason;
       renderPlayers();
     });
