@@ -1659,5 +1659,34 @@ window.NOVA_DATA = {
       ]
     }
   ],
-  "futureMatches": []
+  "futureMatches": [
+    {
+      "id": "upcoming-20261130-chongwenjiumeng-friendly",
+      "date": "2026-11-30",
+      "time": "",
+      "matchType": "友谊赛",
+      "venue": "",
+      "opponent": "重温旧梦",
+      "prediction": {
+        "outcome": "重温旧梦略占优",
+        "teamGoals": 3,
+        "opponentGoals": 4,
+        "expectedGoals": {
+          "team": 3.2,
+          "opponent": 3.5
+        },
+        "scorers": [
+          {
+            "name": "尹宗鑫",
+            "goals": 2
+          },
+          {
+            "name": "李星逸",
+            "goals": 1
+          }
+        ],
+        "basis": "上次交锋是2026年5月9日，Nova以2:5负于重温旧梦，历史交锋需要重视。Nova本赛季已录入的三场友谊赛全部获胜，共进18球、失6球，尹宗鑫连续三场各进两球，李星逸最近一场贡献一球一助攻，因此本次预计比上次更接近。暂将Nova与重温旧梦的预期进球主观估计为3.2与3.5，并用独立泊松模型换算胜平负概率；比分倾向Nova 3:4惜败，预测尹宗鑫两球、李星逸一球。对手近期状态和双方11月30日的阵容尚未确认，不同比赛性质与对手的结果也不能直接比较，此预测是小样本下的粗略参考。"
+      }
+    }
+  ]
 };
