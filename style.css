@@ -714,6 +714,110 @@
         margin: 0.85rem 0 0;
       }
 
+
+      .forecast-metrics {
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+
+      .forecast-metric-heading {
+        align-items: baseline;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 1rem;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+
+      .forecast-metric-heading > span {
+        color: #b9c0bd;
+        font-size: 0.75rem;
+        font-weight: 400;
+      }
+
+      .forecast-expected-goals {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 0.7rem 0 1rem;
+      }
+
+      .forecast-expected-goals > div {
+        background: rgba(255, 255, 255, 0.07);
+        min-width: 0;
+        padding: 0.7rem;
+      }
+
+      .forecast-expected-goals span,
+      .forecast-expected-goals strong {
+        display: block;
+        overflow-wrap: anywhere;
+      }
+
+      .forecast-expected-goals span {
+        color: #d0d7d3;
+        font-size: 0.8rem;
+      }
+
+      .forecast-expected-goals strong {
+        color: white;
+        font-size: 1.65rem;
+        font-variant-numeric: tabular-nums;
+        margin-top: 0.2rem;
+      }
+
+      .forecast-probability-bar {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 5px;
+        display: flex;
+        height: 20px;
+        margin-top: 0.7rem;
+        overflow: hidden;
+      }
+
+      .forecast-segment {
+        flex: 0 0 auto;
+        height: 100%;
+      }
+
+      .forecast-home-win { background: var(--lime); }
+      .forecast-draw { background: #c5cec8; }
+      .forecast-home-loss { background: #e79683; }
+
+      .forecast-probability-legend {
+        display: grid;
+        gap: 0.5rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 0.65rem;
+      }
+
+      .forecast-probability-legend > span {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        font-size: 0.8rem;
+      }
+
+      .forecast-probability-legend i {
+        display: inline-block;
+        flex: 0 0 8px;
+        height: 8px;
+      }
+
+      .forecast-probability-legend b {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .ai-prediction .forecast-method {
+        color: #b9c0bd;
+        font-size: 0.75rem;
+        line-height: 1.5;
+        margin: 0.75rem 0 0;
+      }
+
       .match-card[data-result="win"] { border-top-color: #68a600; }
       .match-card[data-result="draw"] { border-top-color: #d39b00; }
       .match-card[data-result="loss"] { border-top-color: #b53a3a; }

@@ -161,12 +161,84 @@
     };
   }
 
+  function normalizeExpectedGoals(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    const read = value => {
+      if (typeof value !== "number" && typeof value !== "string") return null;
+      if (String(value).trim() === "") return null;
+      const number = Number(value);
+      return Number.isFinite(number) && number >= 0 && number <= 100 ? number : null;
+    };
+    const team = read(raw.team);
+    const opponent = read(raw.opponent);
+    return team == null || opponent == null ? null : { team, opponent };
+  }
+
+  function forecastProbabilities(expectedGoals) {
+    if (!expectedGoals) return null;
+    const poisson = mean => {
+      const limit = Math.ceil(mean + 12 * Math.sqrt(mean + 1) + 12);
+      const values = [Math.exp(-mean)];
+      for (let goals = 1; goals <= limit; goals += 1) {
+        values.push(values[goals - 1] * mean / goals);
+      }
+      return values;
+    };
+    const team = poisson(expectedGoals.team);
+    const opponent = poisson(expectedGoals.opponent);
+    const probabilities = [0, 0, 0];
+    team.forEach((homeChance, homeGoals) => {
+      opponent.forEach((awayChance, awayGoals) => {
+        const result = homeGoals > awayGoals ? 0 : homeGoals === awayGoals ? 1 : 2;
+        probabilities[result] += homeChance * awayChance;
+      });
+    });
+    const total = probabilities.reduce((sum, value) => sum + value, 0);
+    const percentages = probabilities.map(value => value / total * 100);
+    const rounded = percentages.map(Math.floor);
+    const remainderOrder = percentages.map((value, index) => ({ index, fraction: value - rounded[index] }))
+      .sort((a, b) => b.fraction - a.fraction || a.index - b.index);
+    const remainder = 100 - rounded.reduce((sum, value) => sum + value, 0);
+    for (let index = 0; index < remainder; index += 1) rounded[remainderOrder[index].index] += 1;
+    return { homeWin: rounded[0], draw: rounded[1], homeLoss: rounded[2] };
+  }
+
+  function renderForecastMetrics(prediction, opponentName) {
+    const expectedGoals = prediction.expectedGoals;
+    const probabilities = forecastProbabilities(expectedGoals);
+    if (!probabilities) return '<p class="forecast-method">预期进球与胜平负概率待补充</p>';
+    const segments = [
+      { key: "home-win", label: "主胜", value: probabilities.homeWin },
+      { key: "draw", label: "平局", value: probabilities.draw },
+      { key: "home-loss", label: "主负", value: probabilities.homeLoss }
+    ];
+    const summary = segments.map(segment => `${segment.label}${segment.value}%`).join("，");
+    const formatGoals = value => Number.isInteger(value) ? value.toFixed(1) : String(Number(value.toFixed(2)));
+    return `<div class="forecast-metrics">
+      <div class="forecast-metric-heading">双方预期进球 <span>赛前估计</span></div>
+      <div class="forecast-expected-goals">
+        <div><span>Nova United</span><strong>${formatGoals(expectedGoals.team)}</strong></div>
+        <div><span>${escapeHTML(opponentName || "对手")}</span><strong>${formatGoals(expectedGoals.opponent)}</strong></div>
+      </div>
+      <div class="forecast-metric-heading">胜平负概率 <span>合计 100%</span></div>
+      <div class="forecast-probability-bar" role="img" aria-label="以Nova为主队：${summary}">
+        ${segments.map(segment => `<span class="forecast-segment forecast-${segment.key}" style="width:${segment.value}%" aria-hidden="true"></span>`).join("")}
+      </div>
+      <div class="forecast-probability-legend">
+        ${segments.map(segment => `<span><i class="forecast-${segment.key}" aria-hidden="true"></i>${segment.label} <b>${segment.value}%</b></span>`).join("")}
+      </div>
+      <p class="forecast-method">Nova 按主队口径展示；概率由双方预期进球估算。</p>
+    </div>`;
+  }
+
   function normalizeUpcomingMatch(match, index) {
     const rawPrediction = match?.prediction;
     const prediction = rawPrediction && typeof rawPrediction === "object" ? {
       outcome: String(rawPrediction.outcome || "").trim(),
       teamGoals: safeInt(rawPrediction.teamGoals),
       opponentGoals: safeInt(rawPrediction.opponentGoals),
+      // Fractional pre-match means are independent of the predicted score.
+      expectedGoals: normalizeExpectedGoals(rawPrediction.expectedGoals),
       scorers: Array.isArray(rawPrediction.scorers)
         ? rawPrediction.scorers.map(item => ({
           name: String(item?.name || "").trim(),
@@ -617,6 +689,7 @@
         <div class="ai-prediction-head"><span>AI 预测</span><strong>${escapeHTML(prediction.outcome || "赛果待定")}</strong></div>
         <div class="ai-prediction-score"><span>预测比分</span><b>Nova United ${prediction.teamGoals} : ${prediction.opponentGoals} ${escapeHTML(match.opponent || "对手")}</b></div>
         <div class="ai-prediction-scorers"><span>预计进球</span><b>${predictedScorers}</b></div>
+        ${renderForecastMetrics(prediction, match.opponent)}
         <p>${escapeHTML(prediction.basis || "根据现有比赛数据生成")} · 仅供娱乐</p>
       </aside>` : "";
       return `<article class="match-card upcoming-match-card" data-result="upcoming">
